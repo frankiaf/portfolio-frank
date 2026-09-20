@@ -9,7 +9,7 @@ const naHome = Astro.url.pathname === "/";
 		<a href="/contato" data-i18n="menu.contato">Contato</a>
 	</nav>
 
-	{naHome ? null : <a href="/" class="header__nome">Frank Alves</a>}
+	{naHome ? null : <a href="/" class="header__nome"><img src="/images/logo-frank.svg" alt="Frank Alves" /></a>}
 
 	<div class="header__idioma">
 		<span class="header__idioma-label" data-i18n-slide="menu.idioma"
@@ -62,9 +62,14 @@ const naHome = Astro.url.pathname === "/";
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
-		font-size: 1rem;
-		font-weight: 400;
-		white-space: nowrap;	}
+		display: flex;
+	}
+
+	.header__nome img {
+		display: block;
+		height: 12.6px;
+		width: auto;
+	}
 
 	.header a {
 		color: inherit;
