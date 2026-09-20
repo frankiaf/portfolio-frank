@@ -1,4 +1,6 @@
 ---
+import Voltar from "./Voltar.astro";
+
 interface Imagem {
 	src: string;
 	alt: string;
@@ -18,12 +20,7 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 ---
 
 <div class="topo">
-	<a href="/" class="voltar" data-reversa>
-		<svg class="voltar__seta" width="20" height="8" viewBox="0 0 20 8" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
-			<path d="M20 4H1M4 1L1 4L4 7" />
-		</svg>
-		<span class="voltar__texto" data-i18n={chaveTitulo}>{titulo}</span>
-	</a>
+	<Voltar titulo={titulo} chaveTitulo={chaveTitulo} />
 
 	<button type="button" class="ordenar" aria-label="Ordenar imagens">
 		<span class="ordenar__rotulo" data-i18n="galeria.ordenar">Ordenar:</span>
@@ -51,6 +48,12 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		}
 	</div>
 </section>
+
+<button type="button" class="rolar" aria-label="Rolar para ver mais imagens">
+	<svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+		<path d="M6 0V18M1 13L6 18L11 13" />
+	</svg>
+</button>
 
 <div class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
 	<div class="lightbox__palco">
@@ -190,6 +193,22 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		mostrar(indice + 1);
 	});
 
+	const rolar = document.querySelector<HTMLButtonElement>(".rolar")!;
+
+	function atualizarRolar() {
+		const resta = galeria.scrollHeight - galeria.clientHeight - galeria.scrollTop;
+		rolar.classList.toggle("rolar--oculto", resta < 8);
+	}
+
+	lenis.on("scroll", atualizarRolar);
+	new ResizeObserver(atualizarRolar).observe(grade);
+	new ResizeObserver(atualizarRolar).observe(galeria);
+	atualizarRolar();
+
+	rolar.addEventListener("click", () => {
+		lenis.scrollTo(galeria.scrollTop + galeria.clientHeight * 0.8);
+	});
+
 	const ordenar = document.querySelector<HTMLButtonElement>(".ordenar")!;
 	const valor = ordenar.querySelector<HTMLElement>(".ordenar__valor")!;
 	let maisAntigosPrimeiro = false;
@@ -275,42 +294,6 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		transform: rotate(180deg);
 	}
 
-	.voltar {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		flex-shrink: 0;
-		width: fit-content;
-		color: inherit;
-		font-size: 11px;
-		font-weight: 500;
-		text-decoration: none;
-		text-transform: uppercase;
-	}
-
-	.voltar__texto {
-		position: relative;
-	}
-
-	.voltar__texto::before {
-		content: "";
-		position: absolute;
-		top: 100%;
-		left: 0;
-		width: 100%;
-		height: 1px;
-		background: currentColor;
-		pointer-events: none;
-		transform-origin: 100% 50%;
-		transform: scale3d(0, 1, 1);
-		transition: transform 0.3s;
-	}
-
-	.voltar:hover .voltar__texto::before {
-		transform-origin: 0% 50%;
-		transform: scale3d(1, 1, 1);
-	}
-
 	.galeria {
 		flex: 1;
 		min-height: 0;
@@ -337,6 +320,51 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		aspect-ratio: 453 / 356;
 		object-fit: cover;
 		cursor: zoom-in;
+	}
+
+	.rolar {
+		position: absolute;
+		right: 0;
+		bottom: 20px;
+		z-index: 5;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		border: 0;
+		background: var(--cor-texto);
+		color: var(--cor-fundo-pagina);
+		cursor: pointer;
+		transition:
+			opacity 0.3s,
+			visibility 0.3s;
+	}
+
+	.rolar svg {
+		animation: rolar-dica 1.6s ease-in-out infinite;
+	}
+
+	.rolar--oculto {
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	@keyframes rolar-dica {
+		0%,
+		100% {
+			transform: translateY(-2px);
+		}
+		50% {
+			transform: translateY(3px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.rolar svg {
+			animation: none;
+		}
 	}
 
 	.lightbox {

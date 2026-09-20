@@ -1,8 +1,13 @@
 ---
 import Base from "../layouts/Base.astro";
+import Voltar from "../components/Voltar.astro";
 ---
 
 <Base titulo="Sobre mim | Frank Alves" telaCheia>
+	<div class="voltar-topo">
+		<Voltar titulo="Sobre mim" chaveTitulo="menu.sobre" />
+	</div>
+
 	<section class="sobre">
 		<div class="sobre__foto">
 			<img src="/images/sobre-mim.png" alt="Frank de braços cruzados, olhando para o lado" />
@@ -40,6 +45,11 @@ import Base from "../layouts/Base.astro";
 </Base>
 
 <style>
+	.voltar-topo {
+		flex-shrink: 0;
+		margin-top: 40px;
+	}
+
 	.sobre {
 		flex: 1;
 		min-height: 0;
@@ -47,7 +57,7 @@ import Base from "../layouts/Base.astro";
 		grid-template-columns: 32.4% 1fr;
 		column-gap: 11.35%;
 		align-items: start;
-		padding: 58px 0 40px;
+		padding: 32px 0 40px;
 		overflow-y: auto;
 		scrollbar-width: none;
 	}
