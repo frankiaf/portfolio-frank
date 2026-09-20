@@ -1,0 +1,116 @@
+---
+interface Imagem {
+	src: string;
+	alt: string;
+}
+
+interface Props {
+	titulo: string;
+	chaveTitulo: string;
+	imagens: Imagem[];
+}
+
+const { titulo, chaveTitulo, imagens } = Astro.props;
+---
+
+<a href="/" class="voltar" data-reversa>
+	<svg class="voltar__seta" width="20" height="8" viewBox="0 0 20 8" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+		<path d="M20 4H1M4 1L1 4L4 7" />
+	</svg>
+	<span class="voltar__texto" data-i18n={chaveTitulo}>{titulo}</span>
+</a>
+
+<section class="galeria">
+	<div class="galeria__grade">
+		{
+			imagens.map((imagem) => (
+				<div class="galeria__item">
+					<img src={imagem.src} alt={imagem.alt} loading="lazy" />
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<script>
+	import Lenis from "lenis";
+	import "lenis/dist/lenis.css";
+
+	const galeria = document.querySelector<HTMLElement>(".galeria")!;
+	const lenis = new Lenis({
+		wrapper: galeria,
+		content: galeria.querySelector<HTMLElement>(".galeria__grade")!,
+	});
+
+	function raf(tempo: number) {
+		lenis.raf(tempo);
+		requestAnimationFrame(raf);
+	}
+	requestAnimationFrame(raf);
+</script>
+
+<style>
+	.voltar {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-shrink: 0;
+		width: fit-content;
+		margin-top: 40px;
+		color: inherit;
+		font-size: 11px;
+		font-weight: 500;
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+
+	.voltar__texto {
+		position: relative;
+	}
+
+	.voltar__texto::before {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		height: 1px;
+		background: currentColor;
+		pointer-events: none;
+		transform-origin: 100% 50%;
+		transform: scale3d(0, 1, 1);
+		transition: transform 0.3s;
+	}
+
+	.voltar:hover .voltar__texto::before {
+		transform-origin: 0% 50%;
+		transform: scale3d(1, 1, 1);
+	}
+
+	.galeria {
+		flex: 1;
+		min-height: 0;
+		margin-top: 24px;
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.galeria::-webkit-scrollbar {
+		display: none;
+	}
+
+	.galeria__grade {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		grid-auto-rows: max-content;
+		gap: 20px;
+		padding-bottom: 20px;
+	}
+
+	.galeria img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 453 / 356;
+		object-fit: cover;
+	}
+</style>

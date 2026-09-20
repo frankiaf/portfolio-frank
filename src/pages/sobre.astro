@@ -1,0 +1,136 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base titulo="Sobre mim | Frank Alves" telaCheia>
+	<section class="sobre">
+		<div class="sobre__foto">
+			<img src="/images/sobre-mim.png" alt="Frank de braços cruzados, olhando para o lado" />
+		</div>
+
+		<div class="sobre__texto">
+			<h1 class="sobre__titulo" data-i18n="sobre.titulo">
+				Frank atuou como diretor de arte no redesign de grandes marcas, ajudou a montar um time e executar.
+			</h1>
+
+			<div class="sobre__corpo">
+				<div class="sobre__info">
+					<p>Frank Alves</p>
+					<p>Florianópolis, SC</p>
+				</div>
+
+				<div class="sobre__bio">
+					<p data-i18n="sobre.p1">Me chamo Frank Alves, sou designer gráfico e moro em Florianópolis, Santa Catarina.</p>
+					<p data-i18n="sobre.p2">
+						Estudei design e trabalho com identidade visual, ilustração e peças gráficas para marcas que querem se diferenciar.
+						Aqui vai a sua história, do jeito que você quiser contar.
+					</p>
+					<p data-i18n="sobre.p3">Cada projeto é pensado sob medida, cuidando de cada detalhe do começo ao fim.</p>
+				</div>
+			</div>
+
+			<a href="mailto:contato@frankalves.com" class="sobre__contato">
+				<svg class="sobre__seta" width="30" height="8" viewBox="0 0 30 8" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+					<path d="M0 4H29M26 1L29 4L26 7" />
+				</svg>
+				<span class="sobre__email">contato@frankalves.com</span>
+			</a>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.sobre {
+		flex: 1;
+		min-height: 0;
+		display: grid;
+		grid-template-columns: 32.4% 1fr;
+		column-gap: 11.35%;
+		align-items: start;
+		padding: 58px 0 40px;
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.sobre::-webkit-scrollbar {
+		display: none;
+	}
+
+	.sobre__foto img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 453 / 356;
+		object-fit: cover;
+	}
+
+	.sobre__titulo {
+		font-size: 48px;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: -0.01em;
+	}
+
+	.sobre__corpo,
+	.sobre__contato {
+		display: grid;
+		grid-template-columns: 257px minmax(0, 555px);
+	}
+
+	.sobre__corpo {
+		margin-top: 56px;
+	}
+
+	.sobre__info {
+		padding-top: 18px;
+		font-size: 16px;
+		line-height: 24px;
+	}
+
+	.sobre__bio {
+		font-family: var(--fonte-serifada);
+		font-size: 16px;
+		line-height: 1.3;
+	}
+
+	.sobre__bio p + p {
+		margin-top: 1.3em;
+	}
+
+	.sobre__contato {
+		align-items: center;
+		width: fit-content;
+		margin-top: 50px;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.sobre__seta {
+		justify-self: end;
+		margin-right: 18px;
+	}
+
+	.sobre__email {
+		position: relative;
+		width: fit-content;
+		font-size: 24px;
+	}
+
+	.sobre__email::before {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		height: 1px;
+		background: currentColor;
+		pointer-events: none;
+		transform-origin: 100% 50%;
+		transform: scale3d(0, 1, 1);
+		transition: transform 0.3s;
+	}
+
+	.sobre__contato:hover .sobre__email::before {
+		transform-origin: 0% 50%;
+		transform: scale3d(1, 1, 1);
+	}
+</style>

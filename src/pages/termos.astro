@@ -1,0 +1,149 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base titulo="Termos de Uso | Frank Alves" telaCheia>
+	<section class="politica">
+		<h1 class="politica__titulo">Termos de Uso</h1>
+		<p class="politica__data">Última atualização: 20 de setembro de 2026</p>
+
+		<div class="politica__corpo">
+			<p>
+				Este site é o portfólio profissional de Frank Alves, designer gráfico, de Florianópolis, Santa Catarina. Ao acessar e
+				navegar por ele, você concorda com os termos abaixo. Se não concordar, peço que não use o site.
+			</p>
+
+			<h2>1. Sobre o site</h2>
+			<p>
+				O site apresenta trabalhos, projetos pessoais e informações de contato. Ele não é uma loja: não há venda de produtos, pagamento
+				ou cadastro de usuários por aqui.
+			</p>
+
+			<h2>2. Propriedade intelectual</h2>
+			<p>
+				Imagens, ilustrações, layouts, textos e demais conteúdos do site são protegidos pela Lei de Direitos Autorais (Lei nº
+				9.610/1998). Salvo indicação contrária, pertencem a Frank Alves.
+			</p>
+			<p>
+				Marcas, logotipos e produtos de clientes exibidos nos projetos pertencem aos seus respectivos titulares e aparecem aqui
+				apenas para mostrar o trabalho realizado.
+			</p>
+			<p>
+				É proibido copiar, reproduzir, modificar, distribuir ou usar comercialmente qualquer conteúdo do site sem autorização prévia
+				e por escrito. Para pedir autorização, escreva para <a href="mailto:contato@frankalves.com">contato@frankalves.com</a>.
+			</p>
+
+			<h2>3. Uso permitido</h2>
+			<p>Você pode navegar e compartilhar o endereço do site. Não é permitido:</p>
+			<ul>
+				<li>usar o site para fins ilegais ou que violem direitos de terceiros;</li>
+				<li>tentar acessar áreas restritas, derrubar ou sobrecarregar o site;</li>
+				<li>enviar vírus, spam ou qualquer código malicioso;</li>
+				<li>coletar conteúdo do site de forma automatizada (scraping) para uso próprio ou de terceiros.</li>
+			</ul>
+
+			<h2>4. Contato e propostas de trabalho</h2>
+			<p>
+				Enviar uma mensagem não cria contrato. Serviços de design são contratados à parte, com escopo, prazo e valor combinados por
+				escrito. O tratamento dos dados que você enviar está descrito na <a href="/privacidade">Política de Privacidade</a>.
+			</p>
+
+			<h2>5. Precisão das informações</h2>
+			<p>
+				Me esforço para manter o conteúdo correto e atualizado, mas ele pode conter erros ou ficar desatualizado. As informações são
+				fornecidas "como estão", sem garantia de que estejam sempre completas ou disponíveis.
+			</p>
+
+			<h2>6. Links para outros sites</h2>
+			<p>
+				O site pode ter links para serviços de terceiros, como Spotify, LinkedIn e Instagram. Eu não controlo esses sites e não sou
+				responsável pelo conteúdo ou pelas práticas de privacidade deles.
+			</p>
+
+			<h2>7. Limitação de responsabilidade</h2>
+			<p>
+				Dentro do que a lei permite, não me responsabilizo por danos decorrentes do uso ou da impossibilidade de uso do site, como
+				indisponibilidade, falhas técnicas ou conteúdo de terceiros. Isso não afasta direitos que a lei garante a você.
+			</p>
+
+			<h2>8. Mudanças nestes termos</h2>
+			<p>
+				Posso atualizar estes termos a qualquer momento. A data da última atualização fica no topo desta página, e continuar usando o
+				site depois da mudança significa que você aceita a nova versão.
+			</p>
+
+			<h2>9. Lei aplicável e foro</h2>
+			<p>
+				Estes termos seguem as leis do Brasil. Fica eleito o foro da comarca de Florianópolis, Santa Catarina, para resolver qualquer
+				questão, ressalvado o foro do domicílio do consumidor quando a lei assim exigir.
+			</p>
+
+			<h2>10. Contato</h2>
+			<p>Dúvidas sobre estes termos: <a href="mailto:contato@frankalves.com">contato@frankalves.com</a></p>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.politica {
+		flex: 1;
+		min-height: 0;
+		padding: 58px 0 40px;
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.politica::-webkit-scrollbar {
+		display: none;
+	}
+
+	.politica__titulo {
+		font-size: 48px;
+		font-weight: 500;
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+
+	.politica__data {
+		margin-top: 12px;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		opacity: 0.6;
+	}
+
+	.politica__corpo {
+		max-width: 720px;
+		margin-top: 48px;
+		font-family: var(--fonte-serifada);
+		font-size: 16px;
+		line-height: 1.4;
+	}
+
+	.politica__corpo h2 {
+		margin-top: 40px;
+		margin-bottom: 12px;
+		font-family: var(--fonte-principal);
+		font-size: 16px;
+		font-weight: 500;
+	}
+
+	.politica__corpo p + p,
+	.politica__corpo p + ul,
+	.politica__corpo ul + p {
+		margin-top: 1em;
+	}
+
+	.politica__corpo ul {
+		padding-left: 1.2em;
+	}
+
+	.politica__corpo li + li {
+		margin-top: 0.6em;
+	}
+
+	.politica__corpo a {
+		color: inherit;
+		text-underline-offset: 3px;
+	}
+</style>

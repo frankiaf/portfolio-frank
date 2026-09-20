@@ -1,0 +1,50 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Transicao from "../components/Transicao.astro";
+import "../styles/global.css";
+
+interface Props {
+	titulo?: string;
+	telaCheia?: boolean;
+}
+
+const { titulo = "Frank Alves", telaCheia = false } = Astro.props;
+---
+
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap" rel="stylesheet" />
+		<title>{titulo}</title>
+		<script is:inline>
+			try {
+				const raiz = document.documentElement;
+				const w = innerWidth;
+				const h = innerHeight;
+				raiz.style.setProperty("--escala", Math.ceil((w / 2 + h / 2) / 141) + 1);
+				raiz.style.setProperty("--escala-x", Math.ceil(w / 200) + 1);
+				raiz.style.setProperty("--escala-y", Math.ceil(h / 200) + 1);
+				const t = sessionStorage.getItem("transicao");
+				if (t) raiz.classList.add("t-coberto", "t-conteudo");
+				if (t === "reversa") raiz.classList.add("t-reversa");
+			} catch {}
+		</script>
+	</head>
+	<body>
+		<Transicao />
+		<div class:list={["container", { "container--tela-cheia": telaCheia }]}>
+			<Header />
+			<main>
+				<slot />
+			</main>
+			<Footer />
+		</div>
+	</body>
+</html>

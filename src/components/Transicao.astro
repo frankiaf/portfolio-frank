@@ -1,0 +1,166 @@
+---
+// Tipos: wipe_esq_dir | split_diamond | split_diagonal | split_diagonal_alt | split_vertical | split_horizontal | wipe_left | wipe_right | wipe_top | wipe_bottom
+const tipo = "wipe_esq_dir";
+---
+
+<div class="transicao" data-tipo={tipo} aria-hidden="true">
+	<div class="p1"></div>
+	<div class="p2"></div>
+	<div class="p3"></div>
+	<div class="p4"></div>
+	<div class="p5"></div>
+	<div class="p6"></div>
+	<div class="p7"></div>
+	<div class="p8"></div>
+</div>
+
+<style is:global>
+	.transicao {
+		--tempo: 200ms;
+
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		overflow: hidden;
+		pointer-events: none;
+	}
+
+	.transicao div {
+		position: absolute;
+		display: none;
+		background: var(--cor-texto);
+	}
+
+	.transicao :is(.p1, .p2, .p3, .p4) {
+		width: 200px;
+		height: 200px;
+		transform: rotate(45deg) scale(0);
+	}
+
+	.transicao .p1 { left: -100px; top: -100px; }
+	.transicao .p2 { left: -100px; bottom: -100px; }
+	.transicao .p3 { right: -100px; top: -100px; }
+	.transicao .p4 { right: -100px; bottom: -100px; }
+
+	.transicao :is(.p5, .p6) {
+		top: 0;
+		width: 200px;
+		height: 100%;
+		transform: scaleX(0);
+	}
+
+	.transicao .p5 { left: 0; transform-origin: left center; }
+	.transicao .p6 { right: 0; transform-origin: right center; }
+
+	.transicao :is(.p7, .p8) {
+		left: 0;
+		width: 100%;
+		height: 200px;
+		transform: scaleY(0);
+	}
+
+	.transicao .p7 { bottom: 0; transform-origin: center bottom; }
+	.transicao .p8 { top: 0; transform-origin: center top; }
+
+	.transicao[data-tipo="split_diamond"] :is(.p1, .p2, .p3, .p4),
+	.transicao[data-tipo="split_diagonal"] :is(.p1, .p4),
+	.transicao[data-tipo="split_diagonal_alt"] :is(.p2, .p3),
+	.transicao[data-tipo="split_vertical"] :is(.p5, .p6),
+	.transicao[data-tipo="split_horizontal"] :is(.p7, .p8),
+	.transicao[data-tipo="wipe_esq_dir"] :is(.p5, .p6),
+	.transicao[data-tipo="wipe_left"] .p5,
+	.transicao[data-tipo="wipe_right"] .p6,
+	.transicao[data-tipo="wipe_top"] .p8,
+	.transicao[data-tipo="wipe_bottom"] .p7 {
+		display: block;
+	}
+
+	@keyframes t-losango {
+		from { transform: rotate(45deg) scale(0); }
+		to { transform: rotate(45deg) scale(var(--escala)); }
+	}
+
+	@keyframes t-horizontal {
+		from { transform: scaleX(0); }
+		to { transform: scaleX(var(--escala-x)); }
+	}
+
+	@keyframes t-vertical {
+		from { transform: scaleY(0); }
+		to { transform: scaleY(var(--escala-y)); }
+	}
+
+	html.t-cobrindo .transicao :is(.p1, .p2, .p3, .p4) { animation: t-losango var(--tempo) ease forwards; }
+	html.t-cobrindo .transicao :is(.p5, .p6) { animation: t-horizontal var(--tempo) ease forwards; }
+	html.t-cobrindo .transicao :is(.p7, .p8) { animation: t-vertical var(--tempo) ease forwards; }
+
+	html.t-saindo .transicao :is(.p1, .p2, .p3, .p4) { animation: t-losango var(--tempo) ease reverse forwards; }
+	html.t-saindo .transicao :is(.p5, .p6) { animation: t-horizontal var(--tempo) ease reverse forwards; }
+	html.t-saindo .transicao :is(.p7, .p8) { animation: t-vertical var(--tempo) ease reverse forwards; }
+
+	/* wipe_esq_dir: cobre da esquerda para a direita (p5) e descobre da esquerda para a direita (p6) */
+	html.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p6,
+	html.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p5 { animation: none; }
+
+	/* t-reversa (botão voltar): cobre e descobre da direita para a esquerda */
+	html.t-reversa.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p5,
+	html.t-reversa.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p6 { animation: none; }
+	html.t-reversa.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p6 { animation: t-horizontal var(--tempo) ease forwards; }
+	html.t-reversa.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p5 { animation: t-horizontal var(--tempo) ease reverse forwards; }
+
+	html.t-coberto .transicao :is(.p1, .p2, .p3, .p4) { transform: rotate(45deg) scale(var(--escala)); }
+	html.t-coberto .transicao :is(.p5, .p6) { transform: scaleX(var(--escala-x)); }
+	html.t-coberto .transicao :is(.p7, .p8) { transform: scaleY(var(--escala-y)); }
+
+	html.t-cobrindo .transicao,
+	html.t-coberto .transicao {
+		pointer-events: all;
+	}
+</style>
+
+<script>
+	const CHAVE = "transicao";
+	const TEMPO_TOTAL = 400;
+	const PONTO_DE_TROCA = TEMPO_TOTAL / 2;
+	const html = document.documentElement;
+	const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+	function sair() {
+		html.classList.add("t-saindo");
+		html.classList.remove("t-coberto", "t-conteudo");
+		setTimeout(() => html.classList.remove("t-saindo", "t-reversa"), PONTO_DE_TROCA + 100);
+	}
+
+	if (sessionStorage.getItem(CHAVE)) {
+		sessionStorage.removeItem(CHAVE);
+		requestAnimationFrame(() => requestAnimationFrame(sair));
+		setTimeout(() => {
+			if (html.classList.contains("t-coberto")) sair();
+		}, 500);
+	}
+
+	window.addEventListener("pageshow", (e) => {
+		if (e.persisted) html.classList.remove("t-cobrindo", "t-coberto", "t-saindo", "t-conteudo", "t-reversa");
+	});
+
+	document.addEventListener("click", (e) => {
+		if (reduzir || e.defaultPrevented || e.button !== 0) return;
+		if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+		const link = (e.target as Element).closest("a");
+		if (!link || link.target === "_blank" || link.hasAttribute("download")) return;
+
+		const url = new URL(link.href, location.href);
+		if (url.origin !== location.origin) return;
+		if (url.pathname === location.pathname && url.search === location.search) return;
+
+		e.preventDefault();
+		const reversa = link.hasAttribute("data-reversa");
+		if (reversa) html.classList.add("t-reversa");
+		html.classList.add("t-cobrindo");
+		setTimeout(() => {
+			sessionStorage.setItem(CHAVE, reversa ? "reversa" : "1");
+			location.href = url.href;
+		}, PONTO_DE_TROCA);
+	});
+</script>

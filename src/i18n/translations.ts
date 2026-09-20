@@ -1,0 +1,46 @@
+export type Idioma = "pt" | "en";
+
+export const traducoes: Record<Idioma, Record<string, string>> = {
+	pt: {
+		"menu.inicio": "Início",
+		"menu.sobre": "Sobre mim",
+		"menu.contato": "Contato",
+		"menu.idioma": "Idioma:",
+		"menu.idioma-atual": "Português",
+		"menu.trocar-idioma": "Mudar para inglês",
+		"sobre.titulo": "Frank atuou como diretor de arte no redesign de grandes marcas, ajudou a montar um time e executar.",
+		"sobre.p1": "Me chamo Frank Alves, sou designer gráfico e moro em Florianópolis, Santa Catarina.",
+		"sobre.p2":
+			"Estudei design e trabalho com identidade visual, ilustração e peças gráficas para marcas que querem se diferenciar. Aqui vai a sua história, do jeito que você quiser contar.",
+		"sobre.p3": "Cada projeto é pensado sob medida, cuidando de cada detalhe do começo ao fim.",
+		"footer.privacidade": "Privacidade",
+		"footer.termos": "Termos",
+		"cards.trabalhos": "Trabalhos",
+		"cards.projetos": "Projetos pessoais",
+		"cards.sobre": "Sobre mim",
+		"hero.cargo": "Designer gráfico",
+		"hero.local": " localizado em Santa Catarina, BR.",
+		"hero.resumo": "Especialista em design de embalagens e produtos,\ncom experiência em produção gráfica e arte final.",
+	},
+	en: {
+		"menu.inicio": "Home",
+		"menu.sobre": "About me",
+		"menu.contato": "Contact",
+		"menu.idioma": "Language:",
+		"menu.idioma-atual": "English",
+		"menu.trocar-idioma": "Switch to Portuguese",
+		"sobre.titulo": "Frank worked as an art director on brand redesigns, helped build a team and execute.",
+		"sobre.p1": "My name is Frank Alves, I'm a graphic designer based in Florianópolis, Santa Catarina.",
+		"sobre.p2":
+			"I studied design and work with visual identity, illustration and graphic pieces for brands that want to stand out. Your story goes here, told your way.",
+		"sobre.p3": "Every project is made to measure, taking care of every detail from start to finish.",
+		"footer.privacidade": "Privacy",
+		"footer.termos": "Terms",
+		"cards.trabalhos": "Work",
+		"cards.projetos": "Personal projects",
+		"cards.sobre": "About me",
+		"hero.cargo": "Graphic designer",
+		"hero.local": " based in Santa Catarina, BR.",
+		"hero.resumo": "Packaging and product design specialist,\nwith experience in graphic production and final artwork.",
+	},
+};

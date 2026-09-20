@@ -1,0 +1,15 @@
+---
+import Base from "../layouts/Base.astro";
+import Galeria from "../components/Galeria.astro";
+
+const base = [
+	{ src: "/images/trabalhos.png", alt: "Produtos noorskin" },
+	{ src: "/images/projetos-pessoais.png", alt: "Base de corte com recortes de papel" },
+	{ src: "/images/sobre-mim.png", alt: "Frank sentado olhando a montanha" },
+];
+const imagens = Array.from({ length: 12 }, (_, i) => base[i % base.length]);
+---
+
+<Base titulo="Trabalhos | Frank Alves" telaCheia>
+	<Galeria titulo="Trabalhos" chaveTitulo="cards.trabalhos" imagens={imagens} />
+</Base>

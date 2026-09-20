@@ -1,0 +1,162 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base titulo="Política de Privacidade | Frank Alves" telaCheia>
+	<section class="politica">
+		<h1 class="politica__titulo">Política de Privacidade</h1>
+		<p class="politica__data">Última atualização: 20 de setembro de 2026</p>
+
+		<div class="politica__corpo">
+			<p>
+				Esta política explica como o site de Frank Alves trata dados pessoais, de acordo com a Lei Geral de Proteção de Dados
+				(LGPD, Lei nº 13.709/2018).
+			</p>
+
+			<h2>1. Quem é o controlador</h2>
+			<p>
+				Frank Alves, designer gráfico, Florianópolis, Santa Catarina, Brasil.<br />
+				Contato para assuntos de privacidade: <a href="mailto:contato@frankalves.com">contato@frankalves.com</a>
+			</p>
+
+			<h2>2. Quais dados são tratados</h2>
+			<ul>
+				<li>
+					<strong>E-mail e mensagem:</strong> se você me escrever pelo e-mail de contato, recebo seu endereço de e-mail, seu nome
+					(se informado) e o conteúdo da mensagem.
+				</li>
+				<li>
+					<strong>Dados de acesso:</strong> ao carregar a fonte tipográfica do site, seu navegador se conecta ao Google Fonts, que
+					pode receber seu endereço IP e informações do navegador. Esse tratamento é feito pelo Google, sob a política de privacidade
+					dele.
+				</li>
+				<li>
+					<strong>Preferência de idioma:</strong> salva no seu próprio navegador (armazenamento local), para lembrar se você escolheu
+					português ou inglês. Esse dado não é enviado para mim nem para terceiros.
+				</li>
+			</ul>
+			<p>Este site não usa cookies de publicidade, não tem ferramentas de análise de audiência e não tem formulários de cadastro.</p>
+
+			<h2>3. Para que os dados são usados</h2>
+			<ul>
+				<li>Responder mensagens, pedidos de orçamento e propostas de trabalho.</li>
+				<li>Fazer o site funcionar corretamente (fontes e preferência de idioma).</li>
+			</ul>
+
+			<h2>4. Base legal</h2>
+			<p>
+				O tratamento ocorre com base no <strong>consentimento</strong> (ao enviar uma mensagem por iniciativa própria), na
+				<strong>execução de procedimentos preliminares relacionados a contrato</strong> (quando você pede um orçamento) e no
+				<strong>legítimo interesse</strong> (funcionamento e segurança do site), conforme o art. 7º da LGPD.
+			</p>
+
+			<h2>5. Compartilhamento</h2>
+			<p>
+				Não vendo nem cedo seus dados. Eles podem ser acessados apenas por prestadores de serviço necessários ao funcionamento do
+				site (como o provedor de e-mail e o Google Fonts) ou quando houver obrigação legal.
+			</p>
+
+			<h2>6. Por quanto tempo os dados ficam guardados</h2>
+			<p>
+				Mensagens de e-mail ficam guardadas pelo tempo necessário para atender ao seu contato e, depois, pelo prazo de eventuais
+				obrigações legais. Você pode pedir a exclusão a qualquer momento.
+			</p>
+
+			<h2>7. Seus direitos</h2>
+			<p>Pelo art. 18 da LGPD, você pode pedir a qualquer momento:</p>
+			<ul>
+				<li>confirmação de que existe tratamento dos seus dados;</li>
+				<li>acesso aos dados;</li>
+				<li>correção de dados incompletos, inexatos ou desatualizados;</li>
+				<li>anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desconformidade com a lei;</li>
+				<li>portabilidade dos dados;</li>
+				<li>eliminação dos dados tratados com consentimento;</li>
+				<li>informação sobre com quem os dados foram compartilhados;</li>
+				<li>revogação do consentimento.</li>
+			</ul>
+			<p>
+				Para exercer esses direitos, escreva para <a href="mailto:contato@frankalves.com">contato@frankalves.com</a>. Você também
+				pode fazer uma reclamação à Autoridade Nacional de Proteção de Dados (ANPD).
+			</p>
+
+			<h2>8. Segurança</h2>
+			<p>
+				Adoto medidas razoáveis para proteger seus dados contra acesso não autorizado, perda ou alteração. Nenhum sistema é 100%
+				seguro, mas você será avisado em caso de incidente que possa causar risco relevante.
+			</p>
+
+			<h2>9. Links para outros sites</h2>
+			<p>
+				O site pode ter links para redes sociais e outros serviços (Spotify, LinkedIn, Instagram). Cada um tem sua própria política
+				de privacidade, e eu não sou responsável por ela.
+			</p>
+
+			<h2>10. Mudanças nesta política</h2>
+			<p>Posso atualizar esta política. A data da última atualização fica sempre no topo desta página.</p>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.politica {
+		flex: 1;
+		min-height: 0;
+		padding: 58px 0 40px;
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.politica::-webkit-scrollbar {
+		display: none;
+	}
+
+	.politica__titulo {
+		font-size: 48px;
+		font-weight: 500;
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+
+	.politica__data {
+		margin-top: 12px;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		opacity: 0.6;
+	}
+
+	.politica__corpo {
+		max-width: 720px;
+		margin-top: 48px;
+		font-family: var(--fonte-serifada);
+		font-size: 16px;
+		line-height: 1.4;
+	}
+
+	.politica__corpo h2 {
+		margin-top: 40px;
+		margin-bottom: 12px;
+		font-family: var(--fonte-principal);
+		font-size: 16px;
+		font-weight: 500;
+	}
+
+	.politica__corpo p + p,
+	.politica__corpo p + ul,
+	.politica__corpo ul + p {
+		margin-top: 1em;
+	}
+
+	.politica__corpo ul {
+		padding-left: 1.2em;
+	}
+
+	.politica__corpo li + li {
+		margin-top: 0.6em;
+	}
+
+	.politica__corpo a {
+		color: inherit;
+		text-underline-offset: 3px;
+	}
+</style>

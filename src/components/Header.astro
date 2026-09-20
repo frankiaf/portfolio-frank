@@ -1,0 +1,198 @@
+---
+const naHome = Astro.url.pathname === "/";
+---
+
+<header class="header">
+	<nav class="header__nav">
+		<a href="/" data-i18n="menu.inicio">Início</a>
+		<a href="/sobre" data-i18n="menu.sobre">Sobre mim</a>
+		<a href="/contato" data-i18n="menu.contato">Contato</a>
+	</nav>
+
+	{naHome ? null : <a href="/" class="header__nome">Frank Alves</a>}
+
+	<div class="header__idioma">
+		<span class="header__idioma-label" data-i18n-slide="menu.idioma"
+			><span class="header__idioma-clip">Idioma:</span></span
+		>
+		<button type="button" class="header__idioma-btn" data-i18n-aria="menu.trocar-idioma" aria-label="Mudar para inglês">
+			<span class="header__idioma-label" data-i18n-slide="menu.idioma-atual"
+				><span class="header__idioma-clip">Português</span></span
+			>
+		</button>
+	</div>
+</header>
+
+<style>
+	.header {
+		--altura-header: 56px;
+		--borda-header: 1px solid var(--cor-borda);
+
+		position: relative;
+		z-index: 1;
+		height: var(--altura-header);
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: var(--borda-header);
+	}
+
+	.header__nav,
+	.header__idioma {
+		display: flex;
+		align-items: center;
+	}
+
+	.header__nav {
+		gap: 32px;
+	}
+
+	.header__idioma {
+		gap: 12px;
+	}
+
+	.header__nome::before {
+		display: none;
+	}
+
+	.header__nome {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 1rem;
+		font-weight: 400;
+		white-space: nowrap;	}
+
+	.header a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.header__idioma-label {
+		position: relative;
+	}
+
+	.header__idioma-clip {
+		position: relative;
+		display: inline-block;
+		overflow: hidden;
+		white-space: nowrap;
+		vertical-align: top;
+	}
+
+	.header__idioma-clip :global(span) {
+		display: inline-block;
+	}
+
+	.header__idioma > .header__idioma-label::before {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		height: 1px;
+		background: currentColor;
+		pointer-events: none;
+		transform-origin: 100% 50%;
+		transform: scale3d(0, 1, 1);
+		transition: transform 0.3s;
+	}
+
+	.header__idioma:has(.header__idioma-btn:hover) > .header__idioma-label::before {
+		transform-origin: 0% 50%;
+		transform: scale3d(1, 1, 1);
+	}
+
+	.header__idioma-btn {
+		padding: 0;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		letter-spacing: inherit;
+		text-transform: inherit;
+		cursor: pointer;
+	}
+</style>
+
+<script>
+	import { traducoes, type Idioma } from "../i18n/translations";
+
+	const CHAVE = "idioma";
+
+	const slides = document.querySelectorAll<HTMLElement>("[data-i18n-slide]");
+
+	function trocarTexto(clip: HTMLElement, novo: string, anterior?: string) {
+		if (anterior === undefined || anterior === novo) {
+			clip.textContent = novo;
+			return;
+		}
+
+		const saindo = document.createElement("span");
+		saindo.textContent = anterior;
+		const entrando = document.createElement("span");
+		entrando.textContent = novo;
+		entrando.style.position = "absolute";
+		entrando.style.left = "0";
+		entrando.style.top = "0";
+		clip.replaceChildren(saindo, entrando);
+
+		const opcoes: KeyframeAnimationOptions = {
+			duration: 300,
+			easing: "cubic-bezier(0.5, 0.5, 0.3, 1)",
+			fill: "forwards",
+		};
+		saindo.animate(
+			[{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(-150%,0,0)" }],
+			opcoes,
+		);
+		entrando.animate(
+			[{ transform: "translate3d(150%,0,0)" }, { transform: "translate3d(0,0,0)" }],
+			opcoes,
+		).onfinish = () => {
+			clip.textContent = novo;
+		};
+	}
+
+	function aplicar(idioma: Idioma, anterior?: Idioma) {
+		document.documentElement.lang = idioma === "pt" ? "pt-BR" : "en";
+		document.documentElement.dataset.idioma = idioma;
+		const dict = traducoes[idioma];
+
+		document.querySelectorAll<HTMLElement>("[data-i18n]").forEach((el) => {
+			const texto = dict[el.dataset.i18n!];
+			if (texto) el.textContent = texto;
+		});
+
+		slides.forEach((label) => {
+			const chave = label.dataset.i18nSlide!;
+			const clip = label.querySelector<HTMLElement>(".header__idioma-clip")!;
+			trocarTexto(clip, dict[chave], anterior && traducoes[anterior][chave]);
+		});
+
+		document.querySelectorAll<HTMLElement>("[data-i18n-aria]").forEach((el) => {
+			const texto = dict[el.dataset.i18nAria!];
+			if (texto) el.setAttribute("aria-label", texto);
+		});
+
+		try {
+			localStorage.setItem(CHAVE, idioma);
+		} catch {}
+	}
+
+	let atual: Idioma = "pt";
+	try {
+		if (localStorage.getItem(CHAVE) === "en") atual = "en";
+	} catch {}
+
+	aplicar(atual);
+
+	document.querySelector(".header__idioma-btn")?.addEventListener("click", () => {
+		const anterior = atual;
+		atual = atual === "pt" ? "en" : "pt";
+		aplicar(atual, anterior);
+	});
+</script>

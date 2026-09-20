@@ -1,0 +1,159 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base telaCheia>
+	<h1 class="titulo"><span>Frank Alves</span></h1>
+	<p class="descricao">
+		<span class="descricao__destaque" data-i18n="hero.cargo">Designer gráfico</span>
+		<span data-i18n="hero.local"> localizado em Santa Catarina, BR.</span><br />
+		<span class="descricao__resumo" data-i18n="hero.resumo">Especialista em design de embalagens e produtos,
+com experiência em produção gráfica e arte final.</span>
+	</p>
+
+	<section class="cards">
+		<div class="card">
+			<h2 class="card__titulo" data-i18n="cards.trabalhos">Trabalhos</h2>
+			<a href="/trabalhos" class="card__midia"><img src="/images/trabalhos.png" alt="Produtos noorskin" /></a>
+		</div>
+		<div class="card">
+			<h2 class="card__titulo" data-i18n="cards.projetos">Projetos pessoais</h2>
+			<a href="/projetos-pessoais" class="card__midia"><img src="/images/projetos-pessoais.png" alt="Base de corte com recortes de papel" /></a>
+		</div>
+		<div class="card">
+			<h2 class="card__titulo" data-i18n="cards.sobre">Sobre mim</h2>
+			<a href="/sobre" class="card__midia"><img src="/images/sobre-mim.png" alt="Frank de braços cruzados, olhando para o lado" /></a>
+		</div>
+	</section>
+</Base>
+
+<script>
+	const titulo = document.querySelector<HTMLElement>(".titulo")!;
+	const texto = titulo.querySelector<HTMLElement>("span")!;
+
+	const ctx = document.createElement("canvas").getContext("2d")!;
+
+	function ajustar() {
+		const conteudo = texto.textContent!.toUpperCase();
+		const base = 100;
+		ctx.font = `500 ${base}px "General Sans"`;
+		const m = ctx.measureText(conteudo);
+		const espacamento = -0.02 * base;
+		const tintaBase = m.actualBoundingBoxLeft + m.actualBoundingBoxRight + (conteudo.length - 1) * espacamento;
+		const tamanho = (titulo.clientWidth / tintaBase) * base;
+
+		titulo.style.fontSize = `${tamanho}px`;
+		texto.style.marginLeft = `${(m.actualBoundingBoxLeft * tamanho) / base}px`;
+	}
+
+	document.fonts.ready.then(ajustar);
+	new ResizeObserver(ajustar).observe(titulo);
+</script>
+
+<style is:global>
+	.titulo {
+		font-size: 200px;
+		font-weight: 500;
+		line-height: 1;
+		letter-spacing: -0.02em;
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.titulo span {
+		display: inline-block;
+	}
+
+	.descricao {
+		margin-top: clamp(8px, 2.5vh, 24px);
+		font-family: var(--fonte-serifada);
+		font-size: clamp(14px, 2.2vh, 20px);
+		max-width: 640px;
+		line-height: 1.5;
+	}
+
+	.descricao__resumo {
+		white-space: pre-line;
+	}
+
+	.descricao__destaque {
+		padding: 0 0.2em;
+		background: linear-gradient(#2b2b2b, #2b2b2b) no-repeat left center / 0% 100%;
+		-webkit-box-decoration-break: clone;
+		box-decoration-break: clone;
+		animation: marca-texto 0.8s 0.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+	}
+
+	@keyframes marca-texto {
+		to {
+			background-size: 100% 100%;
+			color: var(--cor-fundo-pagina);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.descricao__destaque {
+			animation-duration: 0.01s;
+			animation-delay: 0s;
+		}
+	}
+
+	.cards {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px;
+		flex: 1;
+		min-height: 0;
+		margin-top: clamp(16px, 5vh, 48px);
+		padding-bottom: 34px;
+	}
+
+	.card {
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+	}
+
+	.card__titulo {
+		position: relative;
+		width: fit-content;
+		cursor: default;
+		margin-bottom: 16px;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+	}
+
+	.card__titulo::before {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		height: 1px;
+		background: currentColor;
+		pointer-events: none;
+		transform-origin: 100% 50%;
+		transform: scale3d(0, 1, 1);
+		transition: transform 0.3s;
+	}
+
+	.card:has(a:hover) .card__titulo::before {
+		transform-origin: 0% 50%;
+		transform: scale3d(1, 1, 1);
+	}
+
+	.card__midia {
+		position: relative;
+		display: block;
+		flex: 1;
+		min-height: 0;
+	}
+
+	.card img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+</style>
