@@ -17,6 +17,7 @@ interface Props {
 }
 
 const { titulo, chaveTitulo, imagens } = Astro.props;
+const ehVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 ---
 
 <div class="topo">
@@ -42,7 +43,11 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 						data-descricao={imagem.descricao}
 						data-softwares={imagem.softwares?.join("|")}
 					>
-					<img src={imagem.src} alt={imagem.alt} loading="lazy" />
+					{ehVideo(imagem.src) ? (
+							<video src={imagem.src} aria-label={imagem.alt} autoplay muted loop playsinline preload="metadata" />
+						) : (
+							<img src={imagem.src} alt={imagem.alt} loading="lazy" />
+						)}
 				</div>
 			))
 		}
@@ -58,6 +63,7 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 <div class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
 	<div class="lightbox__palco">
 		<img class="lightbox__img" alt="" />
+		<video class="lightbox__img" autoplay muted loop playsinline hidden></video>
 		<button type="button" class="lightbox__nav lightbox__nav--anterior" aria-label="Imagem anterior">
 			<svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 				<path d="M7 1L1 7L7 13" />
@@ -114,18 +120,32 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 	requestAnimationFrame(raf);
 
 	const lightbox = document.querySelector<HTMLElement>(".lightbox")!;
-	const lightboxImg = lightbox.querySelector<HTMLImageElement>(".lightbox__img")!;
+	const lightboxImg = lightbox.querySelector<HTMLImageElement>("img.lightbox__img")!;
+	const lightboxVideo = lightbox.querySelector<HTMLVideoElement>("video.lightbox__img")!;
 
 	const grade = galeria.querySelector<HTMLElement>(".galeria__grade")!;
-	const listaImagens = () => Array.from(galeria.querySelectorAll<HTMLImageElement>(".galeria__item img"));
+	const MIDIA = ".galeria__item img, .galeria__item video";
+	const listaImagens = () => Array.from(galeria.querySelectorAll<HTMLImageElement | HTMLVideoElement>(MIDIA));
 	let indice = 0;
 
 	function mostrar(i: number) {
 		const imagens = listaImagens();
 		indice = (i + imagens.length) % imagens.length;
 		const img = imagens[indice];
-		lightboxImg.src = img.currentSrc || img.src;
-		lightboxImg.alt = img.alt;
+		const ehVideo = img instanceof HTMLVideoElement;
+		const alt = ehVideo ? (img.getAttribute("aria-label") ?? "") : (img as HTMLImageElement).alt;
+		lightboxImg.hidden = ehVideo;
+		lightboxVideo.hidden = !ehVideo;
+		if (ehVideo) {
+			lightboxVideo.src = img.currentSrc || img.src;
+			lightboxVideo.setAttribute("aria-label", alt);
+			lightboxVideo.play().catch(() => {});
+		} else {
+			lightboxVideo.pause();
+			lightboxVideo.removeAttribute("src");
+			lightboxImg.src = img.currentSrc || img.src;
+			lightboxImg.alt = alt;
+		}
 		preencherInfo(img.closest<HTMLElement>(".galeria__item")!);
 	}
 
@@ -170,13 +190,14 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 	}
 
 	function fechar() {
+		lightboxVideo.pause();
 		lightbox.classList.remove("lightbox--aberto");
 		lightbox.setAttribute("aria-hidden", "true");
 		lenis.start();
 	}
 
 	galeria.addEventListener("click", (e) => {
-		const img = (e.target as Element).closest<HTMLImageElement>(".galeria__item img");
+		const img = (e.target as Element).closest<HTMLImageElement | HTMLVideoElement>(MIDIA);
 		if (img) abrir(listaImagens().indexOf(img));
 	});
 
@@ -314,7 +335,7 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		padding-bottom: 20px;
 	}
 
-	.galeria img {
+	.galeria :is(img, video) {
 		display: block;
 		width: 100%;
 		aspect-ratio: 453 / 356;
@@ -502,5 +523,9 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
+	}
+
+	.lightbox__img[hidden] {
+		display: none;
 	}
 </style>
