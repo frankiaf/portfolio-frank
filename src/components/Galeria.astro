@@ -2,6 +2,10 @@
 interface Imagem {
 	src: string;
 	alt: string;
+	data: string;
+	titulo?: string;
+	descricao?: string;
+	softwares?: string[];
 }
 
 interface Props {
@@ -13,18 +17,34 @@ interface Props {
 const { titulo, chaveTitulo, imagens } = Astro.props;
 ---
 
-<a href="/" class="voltar" data-reversa>
-	<svg class="voltar__seta" width="20" height="8" viewBox="0 0 20 8" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
-		<path d="M20 4H1M4 1L1 4L4 7" />
-	</svg>
-	<span class="voltar__texto" data-i18n={chaveTitulo}>{titulo}</span>
-</a>
+<div class="topo">
+	<a href="/" class="voltar" data-reversa>
+		<svg class="voltar__seta" width="20" height="8" viewBox="0 0 20 8" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+			<path d="M20 4H1M4 1L1 4L4 7" />
+		</svg>
+		<span class="voltar__texto" data-i18n={chaveTitulo}>{titulo}</span>
+	</a>
+
+	<button type="button" class="ordenar" aria-label="Ordenar imagens">
+		<span class="ordenar__rotulo" data-i18n="galeria.ordenar">Ordenar:</span>
+		<span class="ordenar__valor" data-i18n="galeria.recentes">Mais recentes</span>
+		<svg class="ordenar__seta" width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+			<path d="M4 0V11M1 8L4 11L7 8" />
+		</svg>
+	</button>
+</div>
 
 <section class="galeria">
 	<div class="galeria__grade">
 		{
 			imagens.map((imagem) => (
-				<div class="galeria__item">
+				<div
+						class="galeria__item"
+						data-data={imagem.data}
+						data-titulo={imagem.titulo}
+						data-descricao={imagem.descricao}
+						data-softwares={imagem.softwares?.join("|")}
+					>
 					<img src={imagem.src} alt={imagem.alt} loading="lazy" />
 				</div>
 			))
@@ -32,9 +52,51 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 	</div>
 </section>
 
+<div class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+	<div class="lightbox__palco">
+		<img class="lightbox__img" alt="" />
+		<button type="button" class="lightbox__nav lightbox__nav--anterior" aria-label="Imagem anterior">
+			<svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+				<path d="M7 1L1 7L7 13" />
+			</svg>
+		</button>
+		<button type="button" class="lightbox__nav lightbox__nav--proxima" aria-label="Próxima imagem">
+			<svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+				<path d="M1 1L7 7L1 13" />
+			</svg>
+		</button>
+	</div>
+
+	<aside class="lightbox__info">
+		<h2 class="info__titulo"></h2>
+
+		<div class="info__bloco" data-campo="data">
+			<span class="info__rotulo" data-i18n="galeria.data">Data</span>
+			<p class="info__valor"></p>
+		</div>
+
+		<div class="info__bloco" data-campo="descricao">
+			<span class="info__rotulo" data-i18n="galeria.descricao">Descrição</span>
+			<p class="info__valor"></p>
+		</div>
+
+		<div class="info__bloco" data-campo="softwares">
+			<span class="info__rotulo" data-i18n="galeria.softwares">Softwares</span>
+			<ul class="info__lista"></ul>
+		</div>
+	</aside>
+
+	<button type="button" class="lightbox__fechar" aria-label="Fechar imagem">
+		<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+			<path d="M1 1L13 13M13 1L1 13" />
+		</svg>
+	</button>
+</div>
+
 <script>
 	import Lenis from "lenis";
 	import "lenis/dist/lenis.css";
+	import { traducoes, type Idioma } from "../i18n/translations";
 
 	const galeria = document.querySelector<HTMLElement>(".galeria")!;
 	const lenis = new Lenis({
@@ -47,16 +109,178 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		requestAnimationFrame(raf);
 	}
 	requestAnimationFrame(raf);
+
+	const lightbox = document.querySelector<HTMLElement>(".lightbox")!;
+	const lightboxImg = lightbox.querySelector<HTMLImageElement>(".lightbox__img")!;
+
+	const grade = galeria.querySelector<HTMLElement>(".galeria__grade")!;
+	const listaImagens = () => Array.from(galeria.querySelectorAll<HTMLImageElement>(".galeria__item img"));
+	let indice = 0;
+
+	function mostrar(i: number) {
+		const imagens = listaImagens();
+		indice = (i + imagens.length) % imagens.length;
+		const img = imagens[indice];
+		lightboxImg.src = img.currentSrc || img.src;
+		lightboxImg.alt = img.alt;
+		preencherInfo(img.closest<HTMLElement>(".galeria__item")!);
+	}
+
+	const info = lightbox.querySelector<HTMLElement>(".lightbox__info")!;
+	const campo = (nome: string) => info.querySelector<HTMLElement>(`[data-campo="${nome}"]`)!;
+
+	function preencherInfo(item: HTMLElement) {
+		const { titulo, descricao, softwares, data } = item.dataset;
+		const idioma = (document.documentElement.dataset.idioma as Idioma) || "pt";
+
+		info.querySelector<HTMLElement>(".info__titulo")!.textContent = titulo ?? "";
+
+		const dataFormatada = data
+			? new Date(`${data}T00:00:00Z`).toLocaleDateString(idioma === "en" ? "en-US" : "pt-BR", {
+					month: "long",
+					year: "numeric",
+					timeZone: "UTC",
+				})
+			: "";
+		campo("data").querySelector(".info__valor")!.textContent = dataFormatada;
+		campo("data").hidden = !dataFormatada;
+
+		campo("descricao").querySelector(".info__valor")!.textContent = descricao ?? "";
+		campo("descricao").hidden = !descricao;
+
+		const lista = campo("softwares").querySelector<HTMLElement>(".info__lista")!;
+		lista.replaceChildren(
+			...(softwares ? softwares.split("|") : []).map((nome) => {
+				const li = document.createElement("li");
+				li.textContent = nome;
+				return li;
+			}),
+		);
+		campo("softwares").hidden = !softwares;
+	}
+
+	function abrir(i: number) {
+		mostrar(i);
+		lightbox.classList.add("lightbox--aberto");
+		lightbox.setAttribute("aria-hidden", "false");
+		lenis.stop();
+	}
+
+	function fechar() {
+		lightbox.classList.remove("lightbox--aberto");
+		lightbox.setAttribute("aria-hidden", "true");
+		lenis.start();
+	}
+
+	galeria.addEventListener("click", (e) => {
+		const img = (e.target as Element).closest<HTMLImageElement>(".galeria__item img");
+		if (img) abrir(listaImagens().indexOf(img));
+	});
+
+	lightbox.addEventListener("click", fechar);
+	info.addEventListener("click", (e) => e.stopPropagation());
+
+	lightbox.querySelector(".lightbox__nav--anterior")!.addEventListener("click", (e) => {
+		e.stopPropagation();
+		mostrar(indice - 1);
+	});
+
+	lightbox.querySelector(".lightbox__nav--proxima")!.addEventListener("click", (e) => {
+		e.stopPropagation();
+		mostrar(indice + 1);
+	});
+
+	const ordenar = document.querySelector<HTMLButtonElement>(".ordenar")!;
+	const valor = ordenar.querySelector<HTMLElement>(".ordenar__valor")!;
+	let maisAntigosPrimeiro = false;
+
+	ordenar.addEventListener("click", () => {
+		maisAntigosPrimeiro = !maisAntigosPrimeiro;
+		const itens = Array.from(grade.querySelectorAll<HTMLElement>(".galeria__item"));
+		itens.sort((a, b) => {
+			const dif = a.dataset.data!.localeCompare(b.dataset.data!);
+			return maisAntigosPrimeiro ? dif : -dif;
+		});
+		grade.append(...itens);
+
+		const chave = maisAntigosPrimeiro ? "galeria.antigos" : "galeria.recentes";
+		const idioma = (document.documentElement.dataset.idioma as Idioma) || "pt";
+		valor.dataset.i18n = chave;
+		valor.textContent = traducoes[idioma][chave];
+		ordenar.classList.toggle("ordenar--invertido", maisAntigosPrimeiro);
+		lenis.scrollTo(0, { immediate: true });
+	});
+
+	document.addEventListener("keydown", (e) => {
+		if (!lightbox.classList.contains("lightbox--aberto")) return;
+		if (e.key === "Escape") fechar();
+		if (e.key === "ArrowLeft") mostrar(indice - 1);
+		if (e.key === "ArrowRight") mostrar(indice + 1);
+	});
 </script>
 
 <style>
+	.topo {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-shrink: 0;
+		margin-top: 40px;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+	}
+
+	.ordenar {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		text-transform: inherit;
+		cursor: pointer;
+	}
+
+	.ordenar__valor {
+		position: relative;
+	}
+
+	.ordenar__valor::before {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		height: 1px;
+		background: currentColor;
+		pointer-events: none;
+		transform-origin: 100% 50%;
+		transform: scale3d(0, 1, 1);
+		transition: transform 0.3s;
+	}
+
+	.ordenar:hover .ordenar__valor::before {
+		transform-origin: 0% 50%;
+		transform: scale3d(1, 1, 1);
+	}
+
+	.ordenar__seta {
+		transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+	}
+
+	.ordenar--invertido .ordenar__seta {
+		transform: rotate(180deg);
+	}
+
 	.voltar {
 		display: flex;
 		align-items: center;
 		gap: 12px;
 		flex-shrink: 0;
 		width: fit-content;
-		margin-top: 40px;
 		color: inherit;
 		font-size: 11px;
 		font-weight: 500;
@@ -112,5 +336,143 @@ const { titulo, chaveTitulo, imagens } = Astro.props;
 		width: 100%;
 		aspect-ratio: 453 / 356;
 		object-fit: cover;
+		cursor: zoom-in;
+	}
+
+	.lightbox {
+		position: absolute;
+		inset: 0;
+		z-index: 10;
+		display: flex;
+		gap: 32px;
+		padding: 20px 0;
+		background: var(--cor-fundo-pagina);
+		cursor: zoom-out;
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity 0.3s,
+			visibility 0.3s;
+	}
+
+	.lightbox--aberto {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.lightbox__fechar,
+	.lightbox__nav {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border: 0;
+		background: var(--cor-fundo-pagina);
+		color: var(--cor-texto);
+		cursor: pointer;
+	}
+
+	.lightbox__fechar {
+		top: 20px;
+		right: 0;
+		align-items: flex-start;
+		justify-content: flex-end;
+	}
+
+	.lightbox__fechar svg {
+		transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+	}
+
+	.lightbox__fechar:hover svg {
+		transform: rotate(90deg);
+	}
+
+	.lightbox__palco {
+		position: relative;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.lightbox__info {
+		flex-shrink: 0;
+		width: 300px;
+		padding-top: 4px;
+		padding-right: 48px;
+		overflow-y: auto;
+		scrollbar-width: none;
+		cursor: default;
+	}
+
+	.lightbox__info::-webkit-scrollbar {
+		display: none;
+	}
+
+	.info__titulo {
+		font-size: 24px;
+		font-weight: 500;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+	}
+
+	.info__bloco {
+		margin-top: 28px;
+	}
+
+	.info__bloco[hidden] {
+		display: none;
+	}
+
+	.info__rotulo {
+		display: block;
+		margin-bottom: 8px;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		opacity: 0.6;
+	}
+
+	.info__valor,
+	.info__lista {
+		font-family: var(--fonte-serifada);
+		font-size: 16px;
+		line-height: 1.4;
+	}
+
+	.info__lista {
+		list-style: none;
+	}
+
+	.lightbox__nav {
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.lightbox__nav--anterior {
+		left: 0;
+	}
+
+	.lightbox__nav--proxima {
+		right: 0;
+	}
+
+	.lightbox__nav svg {
+		transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+	}
+
+	.lightbox__nav--anterior:hover svg {
+		transform: translateX(-4px);
+	}
+
+	.lightbox__nav--proxima:hover svg {
+		transform: translateX(4px);
+	}
+
+	.lightbox__img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
 	}
 </style>

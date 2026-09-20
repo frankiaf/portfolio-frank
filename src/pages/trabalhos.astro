@@ -7,7 +7,14 @@ const base = [
 	{ src: "/images/projetos-pessoais.png", alt: "Base de corte com recortes de papel" },
 	{ src: "/images/sobre-mim.png", alt: "Frank sentado olhando a montanha" },
 ];
-const imagens = Array.from({ length: 12 }, (_, i) => base[i % base.length]);
+// Datas provisórias (uma por mês, da mais recente para a mais antiga). Troque título, descrição, softwares e data (AAAA-MM-DD) pelos reais de cada projeto.
+const imagens = Array.from({ length: 12 }, (_, i) => ({
+	...base[i % base.length],
+	titulo: `Projeto ${i + 1}`,
+	descricao: "Descrição do projeto. Substitua por um texto sobre o briefing, o processo e o resultado.",
+	softwares: ["Illustrator", "Photoshop", "InDesign"],
+	data: new Date(Date.UTC(2026, 8 - i, 1)).toISOString().slice(0, 10),
+}));
 ---
 
 <Base titulo="Trabalhos | Frank Alves" telaCheia>

@@ -1,0 +1,201 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base titulo="Contato | Frank Alves" telaCheia>
+	<section class="contato">
+		<h1 class="contato__titulo" data-i18n="contato.titulo">Vamos conversar sobre o seu projeto?</h1>
+
+		<form class="form" action="https://formsubmit.co/contato@frankalves.com" method="POST">
+			<label class="form__campo">
+				<span class="form__rotulo" data-i18n="contato.nome">Nome</span>
+				<input type="text" name="nome" required autocomplete="name" />
+			</label>
+
+			<label class="form__campo">
+				<span class="form__rotulo" data-i18n="contato.email">E-mail</span>
+				<input type="email" name="email" required autocomplete="email" />
+			</label>
+
+			<label class="form__campo">
+				<span class="form__rotulo" data-i18n="contato.mensagem">Mensagem</span>
+				<textarea name="mensagem" rows="5" required></textarea>
+			</label>
+
+			<input type="text" name="_honey" class="form__honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+			<input type="hidden" name="_subject" value="Nova mensagem pelo site frankalves.com" />
+			<input type="hidden" name="_template" value="table" />
+			<input type="hidden" name="_captcha" value="false" />
+
+			<label class="form__aceite">
+				<input type="checkbox" name="aceite" required />
+				<span>
+					<span data-i18n="contato.aceite">Li e concordo com a</span>
+					<a href="/privacidade" data-i18n="contato.aceite-link">Política de Privacidade</a>
+				</span>
+			</label>
+
+			<div class="form__rodape">
+				<button type="submit" class="form__enviar" data-i18n="contato.enviar">Enviar mensagem</button>
+				<p class="form__status" role="status" aria-live="polite"></p>
+			</div>
+		</form>
+	</section>
+</Base>
+
+<script>
+	import { traducoes, type Idioma } from "../i18n/translations";
+
+	const form = document.querySelector<HTMLFormElement>(".form")!;
+	const botao = form.querySelector<HTMLButtonElement>(".form__enviar")!;
+	const status = form.querySelector<HTMLElement>(".form__status")!;
+
+	const t = (chave: string) => {
+		const idioma = (document.documentElement.dataset.idioma as Idioma) || "pt";
+		return traducoes[idioma][chave];
+	};
+
+	form.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		if (!form.reportValidity()) return;
+
+		const dados = new FormData(form);
+		dados.delete("aceite");
+
+		botao.disabled = true;
+		botao.textContent = t("contato.enviando");
+		status.textContent = "";
+		status.classList.remove("form__status--erro");
+
+		try {
+			const resposta = await fetch("https://formsubmit.co/ajax/contato@frankalves.com", {
+				method: "POST",
+				headers: { Accept: "application/json" },
+				body: dados,
+			});
+			const json = await resposta.json();
+			if (!resposta.ok || json.success === "false" || json.success === false) throw new Error();
+
+			form.reset();
+			status.textContent = t("contato.sucesso");
+		} catch {
+			status.textContent = t("contato.erro");
+			status.classList.add("form__status--erro");
+		} finally {
+			botao.disabled = false;
+			botao.textContent = t("contato.enviar");
+		}
+	});
+</script>
+
+<style>
+	.contato {
+		flex: 1;
+		min-height: 0;
+		padding: 58px 0 40px;
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.contato::-webkit-scrollbar {
+		display: none;
+	}
+
+	.contato__titulo {
+		max-width: 900px;
+		font-size: 48px;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: -0.01em;
+	}
+
+	.form {
+		display: grid;
+		gap: 28px;
+		max-width: 640px;
+		margin-top: 56px;
+	}
+
+	.form__campo {
+		display: grid;
+		gap: 8px;
+	}
+
+	.form__rotulo {
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+	}
+
+	.form input[type="text"],
+	.form input[type="email"],
+	.form textarea {
+		width: 100%;
+		padding: 8px 0;
+		border: 0;
+		border-bottom: 1px solid var(--cor-texto);
+		border-radius: 0;
+		background: transparent;
+		color: inherit;
+		font: inherit;
+		font-family: var(--fonte-serifada);
+		font-size: 18px;
+		resize: vertical;
+	}
+
+	.form input:focus,
+	.form textarea:focus {
+		outline: none;
+		border-bottom-width: 2px;
+		padding-bottom: 7px;
+	}
+
+	.form__honey {
+		position: absolute;
+		left: -9999px;
+	}
+
+	.form__aceite {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-size: 13px;
+	}
+
+	.form__aceite a {
+		color: inherit;
+		text-underline-offset: 3px;
+	}
+
+	.form__rodape {
+		display: flex;
+		align-items: center;
+		gap: 24px;
+		flex-wrap: wrap;
+	}
+
+	.form__enviar {
+		padding: 14px 28px;
+		border: 0;
+		background: var(--cor-texto);
+		color: var(--cor-fundo-pagina);
+		font: inherit;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+
+	.form__enviar:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+
+	.form__status {
+		font-size: 13px;
+	}
+
+	.form__status--erro {
+		color: #b00020;
+	}
+</style>
