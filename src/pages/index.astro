@@ -64,12 +64,6 @@ experiência em produção gráfica e arte final.</span>
 		display: inline-block;
 	}
 
-	@media (max-width: 768px) {
-		.titulo {
-			margin-top: 26px; /* com o respiro interno da fonte, ~34px visíveis, igual ao espaço sobre o footer */
-		}
-	}
-
 	.descricao {
 		margin-top: clamp(8px, 2.5vh, 24px);
 		font-family: var(--fonte-serifada);
@@ -145,5 +139,24 @@ experiência em produção gráfica e arte final.</span>
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+	}
+
+	@media (max-width: 768px) {
+		.titulo {
+			margin-top: 26px; /* com o respiro interno da fonte, ~34px visíveis, igual ao espaço sobre o footer */
+		}
+
+		/* texto corrido: sem as quebras de linha manuais */
+		.descricao br {
+			display: none;
+		}
+
+		.descricao__resumo {
+			white-space: normal;
+		}
+
+		.descricao__resumo::before {
+			content: " ";
+		}
 	}
 </style>

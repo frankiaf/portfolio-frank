@@ -36,6 +36,7 @@ body {
 	color: var(--cor-texto);
 	background: var(--cor-fundo-pagina);
 	min-height: 100vh;
+	min-height: 100dvh;
 }
 
 main {
@@ -101,6 +102,7 @@ html.t-conteudo main {
 	max-width: var(--largura-site);
 	margin: 0 auto;
 	min-height: 100vh;
+	min-height: 100dvh;
 	background: var(--cor-area);
 }
 
@@ -108,4 +110,10 @@ html.t-conteudo main {
 	height: 100vh;
 	height: 100dvh;
 	min-height: 560px;
+}
+
+@media (max-width: 768px) {
+	.container--tela-cheia {
+		min-height: 0;
+	}
 }
