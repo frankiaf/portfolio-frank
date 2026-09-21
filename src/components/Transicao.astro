@@ -170,19 +170,35 @@ const tipo = "wipe_esq_dir";
 	}
 
 	.loader {
-		width: 45px;
-		aspect-ratio: 1;
-		background:
-			linear-gradient(#0000 calc(1 * 100% / 6), var(--cor-texto) 0 calc(3 * 100% / 6), #0000 0) left bottom,
-			linear-gradient(#0000 calc(2 * 100% / 6), var(--cor-texto) 0 calc(4 * 100% / 6), #0000 0) center bottom,
-			linear-gradient(#0000 calc(3 * 100% / 6), var(--cor-texto) 0 calc(5 * 100% / 6), #0000 0) right bottom;
-		background-size: 20% 600%;
-		background-repeat: no-repeat;
-		animation: l3 1s infinite linear;
+		--color-1: rgba(136, 136, 136, 0.2);
+		--color-2: #888;
+
+		position: relative;
+		display: block;
+		width: 80px;
+		height: 4px;
+		border-radius: 2px;
+		background: var(--color-1);
+		overflow: hidden;
+		box-sizing: border-box;
 	}
 
-	@keyframes l3 {
-		100% { background-position: left top, center top, right top; }
+	.loader::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 35px;
+		border-radius: inherit;
+		background: var(--color-2);
+		box-sizing: border-box;
+		animation: slide 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+	}
+
+	@keyframes slide {
+		0% { transform: translateX(-35px); }
+		100% { transform: translateX(80px); }
 	}
 </style>
 
