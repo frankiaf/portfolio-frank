@@ -28,7 +28,7 @@ const tipo = "wipe_esq_dir";
 	.transicao div {
 		position: absolute;
 		display: none;
-		background: var(--cor-texto);
+		background: var(--cor-fundo-pagina);
 	}
 
 	.transicao :is(.p1, .p2, .p3, .p4) {
@@ -98,15 +98,45 @@ const tipo = "wipe_esq_dir";
 	html.t-saindo .transicao :is(.p5, .p6) { animation: t-horizontal var(--tempo) ease reverse forwards; }
 	html.t-saindo .transicao :is(.p7, .p8) { animation: t-vertical var(--tempo) ease reverse forwards; }
 
-	/* wipe_esq_dir: cobre da esquerda para a direita (p5) e descobre da esquerda para a direita (p6) */
-	html.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p6,
-	html.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p5 { animation: none; }
+	/* wipe_esq_dir: duas faixas horizontais (p5 em cima, p6 embaixo); a de cima é mais rápida.
+	   Cobre da esquerda para a direita e descobre também da esquerda para a direita. */
+	.transicao[data-tipo="wipe_esq_dir"] {
+		--tempo-cima: 130ms;
+		--tempo-baixo: 200ms;
+		--origem-cobre: left center;
+		--origem-saida: right center;
+	}
 
 	/* t-reversa (botão voltar): cobre e descobre da direita para a esquerda */
-	html.t-reversa.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p5,
-	html.t-reversa.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p6 { animation: none; }
-	html.t-reversa.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p6 { animation: t-horizontal var(--tempo) ease forwards; }
-	html.t-reversa.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p5 { animation: t-horizontal var(--tempo) ease reverse forwards; }
+	html.t-reversa .transicao[data-tipo="wipe_esq_dir"] {
+		--origem-cobre: right center;
+		--origem-saida: left center;
+	}
+
+	.transicao[data-tipo="wipe_esq_dir"] :is(.p5, .p6) {
+		left: 0;
+		right: auto;
+		width: 100%;
+		height: 50%;
+		transform-origin: var(--origem-cobre);
+	}
+
+	.transicao[data-tipo="wipe_esq_dir"] .p5 { top: 0; }
+	.transicao[data-tipo="wipe_esq_dir"] .p6 { top: auto; bottom: 0; }
+
+	@keyframes t-faixa {
+		from { transform: scaleX(0); }
+		to { transform: scaleX(1); }
+	}
+
+	html.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p5 { animation: t-faixa var(--tempo-cima) ease forwards; }
+	html.t-cobrindo .transicao[data-tipo="wipe_esq_dir"] .p6 { animation: t-faixa var(--tempo-baixo) ease forwards; }
+
+	html.t-saindo .transicao[data-tipo="wipe_esq_dir"] :is(.p5, .p6) { transform-origin: var(--origem-saida); }
+	html.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p5 { animation: t-faixa var(--tempo-cima) ease reverse forwards; }
+	html.t-saindo .transicao[data-tipo="wipe_esq_dir"] .p6 { animation: t-faixa var(--tempo-baixo) ease reverse forwards; }
+
+	html.t-coberto .transicao[data-tipo="wipe_esq_dir"] :is(.p5, .p6) { transform: scaleX(1); }
 
 	html.t-coberto .transicao :is(.p1, .p2, .p3, .p4) { transform: rotate(45deg) scale(var(--escala)); }
 	html.t-coberto .transicao :is(.p5, .p6) { transform: scaleX(var(--escala-x)); }

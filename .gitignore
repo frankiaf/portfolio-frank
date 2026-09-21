@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# contexto pessoal do projeto (não publicar)
+CONTEXTO.md

@@ -7,7 +7,7 @@ import Base from "../layouts/Base.astro";
 	<p class="descricao">
 		<span class="descricao__destaque" data-i18n="hero.cargo">Designer gráfico</span>
 		<span data-i18n="hero.local"> localizado em Santa Catarina, Brasil.</span><br />
-		<span class="descricao__resumo" data-i18n="hero.resumo">Especialista em design de embalagens e produtos, com
+		<span class="descricao__resumo" data-i18n="hero.resumo" data-i18n-html>Especialista em design de <em>embalagens</em> e <em>produtos</em>, com
 experiência em produção gráfica e arte final.</span>
 	</p>
 
@@ -76,26 +76,10 @@ experiência em produção gráfica e arte final.</span>
 		white-space: pre-line;
 	}
 
-	.descricao__destaque {
-		padding: 0 0.2em;
-		background: linear-gradient(#2b2b2b, #2b2b2b) no-repeat left center / 0% 100%;
-		-webkit-box-decoration-break: clone;
-		box-decoration-break: clone;
-		animation: marca-texto 0.8s 0.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-	}
-
-	@keyframes marca-texto {
-		to {
-			background-size: 100% 100%;
-			color: var(--cor-fundo-pagina);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.descricao__destaque {
-			animation-duration: 0.01s;
-			animation-delay: 0s;
-		}
+	.descricao__destaque,
+	.descricao__resumo em {
+		font-family: "Source Serif 4", var(--fonte-serifada);
+		font-style: italic;
 	}
 
 	.cards {
