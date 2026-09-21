@@ -9,7 +9,8 @@ import Voltar from "../components/Voltar.astro";
 	</div>
 
 	<section class="contato">
-		<h1 class="contato__titulo" data-i18n="contato.titulo">Vamos conversar sobre o seu projeto?</h1>
+		<h1 class="contato__titulo" data-i18n="contato.titulo">Vamos conversar
+sobre o seu projeto?</h1>
 
 		<form class="form" action="https://formsubmit.co/contato@frankalves.com" method="POST">
 			<label class="form__campo">
@@ -115,8 +116,10 @@ import Voltar from "../components/Voltar.astro";
 		max-width: 900px;
 		font-size: 48px;
 		font-weight: 500;
-		line-height: 1.4;
+		line-height: 1.15;
 		letter-spacing: -0.01em;
+		text-transform: uppercase;
+		white-space: pre-line;
 	}
 
 	.form {
@@ -173,6 +176,7 @@ import Voltar from "../components/Voltar.astro";
 	}
 
 	.form__aceite a {
+		margin-left: 0.3em;
 		color: inherit;
 		text-underline-offset: 3px;
 	}
