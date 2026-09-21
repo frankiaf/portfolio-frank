@@ -8,6 +8,7 @@ export const traducoes: Record<Idioma, Record<string, string>> = {
 		"menu.idioma": "Idioma:",
 		"menu.idioma-atual": "Português",
 		"menu.trocar-idioma": "Mudar para inglês",
+		"menu.abrir": "Abrir menu",
 		"sobre.titulo": "Frank atuou como diretor de arte no redesign de grandes marcas",
 		"sobre.p1": "Me chamo Frank Alves, sou designer gráfico e moro em Florianópolis, Santa Catarina.",
 		"sobre.p2":
@@ -45,6 +46,7 @@ export const traducoes: Record<Idioma, Record<string, string>> = {
 		"menu.idioma": "Language:",
 		"menu.idioma-atual": "English",
 		"menu.trocar-idioma": "Switch to Portuguese",
+		"menu.abrir": "Open menu",
 		"sobre.titulo": "Frank worked as an art director on major brand redesigns",
 		"sobre.p1": "My name is Frank Alves, I'm a graphic designer based in Florianópolis, Santa Catarina.",
 		"sobre.p2":

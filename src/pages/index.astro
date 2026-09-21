@@ -18,7 +18,7 @@ experiência em produção gráfica e arte final.</span>
 		</div>
 		<div class="card">
 			<h2 class="card__titulo" data-i18n="cards.projetos">Experimentos</h2>
-			<a href="/experimentos" class="card__midia"><img src="/images/projetos-pessoais.png" alt="Base de corte com recortes de papel" /></a>
+			<a href="/experimentos" class="card__midia"><img src="/images/projetos-pessoais.png" alt="Caderno com esboços de embalagens, moodboard e amostras de materiais" /></a>
 		</div>
 		<div class="card">
 			<h2 class="card__titulo" data-i18n="cards.sobre">Sobre mim</h2>
@@ -62,6 +62,12 @@ experiência em produção gráfica e arte final.</span>
 
 	.titulo span {
 		display: inline-block;
+	}
+
+	@media (max-width: 768px) {
+		.titulo {
+			margin-top: 26px; /* com o respiro interno da fonte, ~34px visíveis, igual ao espaço sobre o footer */
+		}
 	}
 
 	.descricao {

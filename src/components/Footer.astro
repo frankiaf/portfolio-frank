@@ -1,5 +1,5 @@
 <footer class="footer">
-	<nav class="footer__nav">
+	<nav class="footer__nav footer__nav--legal">
 		<a href="/privacidade" data-i18n="footer.privacidade">Privacidade</a>
 		<a href="/termos" data-i18n="footer.termos">Termos</a>
 	</nav>
@@ -32,5 +32,10 @@
 	.footer a {
 		color: inherit;
 		text-decoration: none;
+	}
+	@media (max-width: 768px) {
+		.footer__nav--legal {
+			display: none;
+		}
 	}
 </style>

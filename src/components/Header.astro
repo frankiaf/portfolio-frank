@@ -3,12 +3,20 @@ const naHome = Astro.url.pathname === "/";
 ---
 
 <header class="header">
-	<nav class="header__nav">
+	<button type="button" class="header__menu-btn" data-i18n-aria="menu.abrir" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-lateral">
+		<span class="header__menu-linhas" aria-hidden="true"></span>
+	</button>
+	<div class="header__fundo" aria-hidden="true"></div>
+	<nav class="header__nav" id="menu-lateral">
 		<a href="/" data-i18n="menu.inicio">Início</a>
 		<a href="/trabalhos" data-i18n="cards.trabalhos">Trabalhos</a>
 		<a href="/experimentos" data-i18n="cards.projetos">Experimentos</a>
 		<a href="/sobre" data-i18n="menu.sobre">Sobre mim</a>
 		<a href="/contato" data-i18n="menu.contato">Contato</a>
+		<div class="header__legal">
+			<a href="/privacidade" data-i18n="footer.privacidade">Privacidade</a>
+			<a href="/termos" data-i18n="footer.termos">Termos</a>
+		</div>
 	</nav>
 
 	{naHome ? null : <a href="/" class="header__nome"><img src="/images/logo-frank.svg" alt="Frank Alves" /></a>}
@@ -54,6 +62,12 @@ const naHome = Astro.url.pathname === "/";
 
 	.header__idioma {
 		gap: 12px;
+	}
+
+	.header__menu-btn,
+	.header__fundo,
+	.header__legal {
+		display: none;
 	}
 
 	.header__nome::before {
@@ -122,6 +136,118 @@ const naHome = Astro.url.pathname === "/";
 		letter-spacing: inherit;
 		text-transform: inherit;
 		cursor: pointer;
+	}
+
+	@media (max-width: 768px) {
+		.header__menu-btn {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			margin-left: -6px;
+			padding: 0;
+			border: 0;
+			background: none;
+			color: inherit;
+			cursor: pointer;
+			position: relative;
+			z-index: 12;
+			transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+		}
+
+		.header--aberto .header__menu-btn {
+			transform: rotate(90deg);
+		}
+
+		.header__menu-linhas,
+		.header__menu-linhas::before {
+			display: block;
+			width: 18px;
+			height: 1.5px;
+			background: currentColor;
+		}
+
+		.header__menu-linhas {
+			position: relative;
+			top: -3px;
+		}
+
+		.header__menu-linhas::before {
+			content: "";
+			position: absolute;
+			top: 6px;
+		}
+
+		.header__menu-linhas,
+		.header__menu-linhas::before {
+			transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+		}
+
+		.header--aberto .header__menu-linhas {
+			transform: translateY(3px) rotate(45deg);
+		}
+
+		.header--aberto .header__menu-linhas::before {
+			transform: translateY(-6px) rotate(-90deg);
+		}
+
+		.header__fundo {
+			display: block;
+			position: fixed;
+			inset: 0;
+			z-index: 10;
+			background: rgba(0, 0, 0, 0.35);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.3s;
+		}
+
+		.header__nav {
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 11;
+			width: min(80vw, 320px);
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 24px;
+			padding: 88px var(--padding-pagina) var(--padding-pagina);
+			background: var(--cor-fundo-pagina);
+			border-right: var(--borda-header);
+			font-size: 14px;
+			transform: translateX(-100%);
+			visibility: hidden;
+			transition:
+				transform 0.3s cubic-bezier(0.65, 0, 0.35, 1),
+				visibility 0s 0.3s;
+		}
+
+		.header__legal {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			margin-top: auto;
+			font-size: 11px;
+		}
+
+		.header--aberto .header__nav {
+			transform: translateX(0);
+			visibility: visible;
+			transition:
+				transform 0.3s cubic-bezier(0.65, 0, 0.35, 1),
+				visibility 0s;
+		}
+
+		.header--aberto .header__fundo {
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.header__idioma-label:first-child {
+			display: none;
+		}
 	}
 </style>
 
@@ -204,4 +330,19 @@ const naHome = Astro.url.pathname === "/";
 		atual = atual === "pt" ? "en" : "pt";
 		aplicar(atual, anterior);
 	});
+	const header = document.querySelector<HTMLElement>(".header")!;
+	const botaoMenu = header.querySelector<HTMLButtonElement>(".header__menu-btn")!;
+
+	function alternarMenu(abrir: boolean) {
+		header.classList.toggle("header--aberto", abrir);
+		botaoMenu.setAttribute("aria-expanded", String(abrir));
+	}
+
+	botaoMenu.addEventListener("click", () => alternarMenu(!header.classList.contains("header--aberto")));
+	header.querySelector(".header__fundo")!.addEventListener("click", () => alternarMenu(false));
+	header.querySelectorAll(".header__nav a").forEach((a) => a.addEventListener("click", () => alternarMenu(false)));
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") alternarMenu(false);
+	});
+	window.matchMedia("(min-width: 769px)").addEventListener("change", () => alternarMenu(false));
 </script>
