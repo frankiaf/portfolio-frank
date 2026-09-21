@@ -26,6 +26,7 @@ const { titulo = "Frank Alves", telaCheia = false } = Astro.props;
 		<script is:inline>
 			try {
 				const raiz = document.documentElement;
+				raiz.classList.add("t-carregando");
 				const w = innerWidth;
 				const h = innerHeight;
 				raiz.style.setProperty("--escala", Math.ceil((w / 2 + h / 2) / 141) + 1);

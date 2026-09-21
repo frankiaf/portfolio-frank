@@ -12,6 +12,7 @@ const tipo = "wipe_esq_dir";
 	<div class="p6"></div>
 	<div class="p7"></div>
 	<div class="p8"></div>
+	<span class="t-loader"><span class="loader"></span></span>
 </div>
 
 <style is:global>
@@ -146,6 +147,43 @@ const tipo = "wipe_esq_dir";
 	html.t-coberto .transicao {
 		pointer-events: all;
 	}
+
+	.transicao .t-loader {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		display: none;
+		align-items: center;
+		justify-content: center;
+	}
+
+	html.t-cobrindo .transicao .t-loader,
+	html.t-coberto .transicao .t-loader,
+	html.t-carregando .transicao .t-loader {
+		display: flex;
+	}
+
+	/* Carregamento inicial: nenhuma faixa cobre a tela, então o loader traz o próprio fundo. */
+	html.t-carregando .transicao .t-loader {
+		background: var(--cor-fundo-pagina);
+		pointer-events: all;
+	}
+
+	.loader {
+		width: 45px;
+		aspect-ratio: 1;
+		background:
+			linear-gradient(#0000 calc(1 * 100% / 6), var(--cor-texto) 0 calc(3 * 100% / 6), #0000 0) left bottom,
+			linear-gradient(#0000 calc(2 * 100% / 6), var(--cor-texto) 0 calc(4 * 100% / 6), #0000 0) center bottom,
+			linear-gradient(#0000 calc(3 * 100% / 6), var(--cor-texto) 0 calc(5 * 100% / 6), #0000 0) right bottom;
+		background-size: 20% 600%;
+		background-repeat: no-repeat;
+		animation: l3 1s infinite linear;
+	}
+
+	@keyframes l3 {
+		100% { background-position: left top, center top, right top; }
+	}
 </style>
 
 <script>
@@ -169,8 +207,15 @@ const tipo = "wipe_esq_dir";
 		}, 500);
 	}
 
+	function terminouCarregar() {
+		html.classList.remove("t-carregando");
+	}
+
+	if (document.readyState === "complete") terminouCarregar();
+	else window.addEventListener("load", terminouCarregar);
+
 	window.addEventListener("pageshow", (e) => {
-		if (e.persisted) html.classList.remove("t-cobrindo", "t-coberto", "t-saindo", "t-conteudo", "t-reversa");
+		if (e.persisted) html.classList.remove("t-cobrindo", "t-coberto", "t-saindo", "t-conteudo", "t-reversa", "t-carregando");
 	});
 
 	document.addEventListener("click", (e) => {
