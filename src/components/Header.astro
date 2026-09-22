@@ -13,6 +13,18 @@ const naHome = Astro.url.pathname === "/";
 		<a href="/experimentos" data-i18n="cards.projetos">Experimentos</a>
 		<a href="/sobre" data-i18n="menu.sobre">Sobre mim</a>
 		<a href="/contato" data-i18n="menu.contato">Contato</a>
+
+		<div class="header__idioma header__idioma--movel">
+			<span class="header__idioma-label" data-i18n-slide="menu.idioma"
+				><span class="header__idioma-clip">Idioma:</span></span
+			>
+			<button type="button" class="header__idioma-btn" data-i18n-aria="menu.trocar-idioma" aria-label="Mudar para inglês">
+				<span class="header__idioma-label" data-i18n-slide="menu.idioma-atual"
+					><span class="header__idioma-clip">Português</span></span
+				>
+			</button>
+		</div>
+
 		<div class="header__legal">
 			<a href="/privacidade" data-i18n="footer.privacidade">Privacidade</a>
 			<a href="/termos" data-i18n="footer.termos">Termos</a>
@@ -54,6 +66,10 @@ const naHome = Astro.url.pathname === "/";
 	.header__idioma {
 		display: flex;
 		align-items: center;
+	}
+
+	.header__idioma--movel {
+		display: none;
 	}
 
 	.header__nav {
@@ -211,8 +227,8 @@ const naHome = Astro.url.pathname === "/";
 			z-index: 11;
 			width: min(80vw, 320px);
 			flex-direction: column;
-			align-items: flex-start;
-			gap: 24px;
+			align-items: stretch;
+			gap: 0;
 			padding: 88px var(--padding-pagina) var(--padding-pagina);
 			background: var(--cor-fundo-pagina);
 			border-right: var(--borda-header);
@@ -222,6 +238,25 @@ const naHome = Astro.url.pathname === "/";
 			transition:
 				transform 0.3s cubic-bezier(0.65, 0, 0.35, 1),
 				visibility 0s 0.3s;
+		}
+
+		.header__nav a {
+			padding: 14px 0;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+		}
+
+		.header__nav a:first-child {
+			border-top: 1px solid rgba(0, 0, 0, 0.15);
+		}
+
+		.header > .header__idioma {
+			display: none;
+		}
+
+		.header__idioma--movel {
+			display: flex;
+			padding: 14px 0;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 		}
 
 		.header__legal {
@@ -245,7 +280,7 @@ const naHome = Astro.url.pathname === "/";
 			pointer-events: all;
 		}
 
-		.header__idioma-label:first-child {
+		.header__idioma > .header__idioma-label:first-child {
 			display: none;
 		}
 	}
@@ -325,11 +360,13 @@ const naHome = Astro.url.pathname === "/";
 
 	aplicar(atual);
 
-	document.querySelector(".header__idioma-btn")?.addEventListener("click", () => {
-		const anterior = atual;
-		atual = atual === "pt" ? "en" : "pt";
-		aplicar(atual, anterior);
-	});
+	document.querySelectorAll(".header__idioma-btn").forEach((btn) =>
+		btn.addEventListener("click", () => {
+			const anterior = atual;
+			atual = atual === "pt" ? "en" : "pt";
+			aplicar(atual, anterior);
+		}),
+	);
 	const header = document.querySelector<HTMLElement>(".header")!;
 	const botaoMenu = header.querySelector<HTMLButtonElement>(".header__menu-btn")!;
 
