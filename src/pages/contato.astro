@@ -100,6 +100,15 @@ sobre o seu projeto?</h1>
 		margin-top: 40px;
 	}
 
+	@media (max-width: 768px) {
+		.voltar-topo {
+			display: flex;
+			align-items: center;
+			height: 56px;
+			margin-top: 0;
+		}
+	}
+
 	.contato {
 		flex: 1;
 		min-height: 0;
@@ -215,6 +224,10 @@ sobre o seu projeto?</h1>
 	}
 
 	@media (max-width: 768px) {
+		.contato {
+			padding-top: 0;
+		}
+
 		.contato__titulo {
 			font-size: 28px;
 		}

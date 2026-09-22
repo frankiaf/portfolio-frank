@@ -334,6 +334,15 @@ const ehVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 	}
 
 	@media (max-width: 768px) {
+		.topo {
+			height: 56px;
+			margin-top: 0;
+		}
+
+		.galeria {
+			margin-top: 0;
+		}
+
 		.galeria__grade {
 			grid-template-columns: repeat(2, 1fr);
 			gap: 12px;
@@ -429,7 +438,7 @@ const ehVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 	}
 
 	.lightbox__fechar {
-		top: 20px;
+		top: 40px;
 		right: 0;
 		align-items: flex-start;
 		justify-content: flex-end;
@@ -463,8 +472,13 @@ const ehVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 		.lightbox {
 			flex-direction: column;
 			gap: 16px;
-			padding-top: 76px;
+			padding-top: 56px;
 			overflow-y: auto;
+			scrollbar-width: none;
+		}
+
+		.lightbox::-webkit-scrollbar {
+			display: none;
 		}
 
 		.lightbox__fechar {

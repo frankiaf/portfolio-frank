@@ -64,6 +64,15 @@ import Voltar from "../components/Voltar.astro";
 		margin-top: 40px;
 	}
 
+	@media (max-width: 768px) {
+		.voltar-topo {
+			display: flex;
+			align-items: center;
+			height: 56px;
+			margin-top: 0;
+		}
+	}
+
 	.sobre {
 		flex: 1;
 		min-height: 0;
@@ -157,7 +166,7 @@ import Voltar from "../components/Voltar.astro";
 		.sobre {
 			display: flex;
 			flex-direction: column;
-			padding: 20px 0 40px;
+			padding: 0 0 40px;
 		}
 
 		.sobre__titulo {
