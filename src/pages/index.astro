@@ -25,6 +25,8 @@ experiência em produção gráfica e arte final.</span>
 			<a href="/sobre" class="card__midia"><img src="/images/sobre-mim.png" alt="Frank de braços cruzados, olhando para o lado" /></a>
 		</div>
 	</section>
+
+	<div class="cursor" aria-hidden="true"></div>
 </Base>
 
 <script>
@@ -48,6 +50,39 @@ experiência em produção gráfica e arte final.</span>
 
 	document.fonts.ready.then(ajustar);
 	new ResizeObserver(ajustar).observe(titulo);
+
+	// Revelação em cascata: título -> descrição -> cards, um depois do outro.
+	const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	if (!reduzir) {
+		document.fonts.ready.then(() => {
+			requestAnimationFrame(() => requestAnimationFrame(() => {
+				document.documentElement.classList.add("pronto");
+			}));
+		});
+	}
+
+	// Cursor customizado: só em telas com mouse de verdade.
+	if (!reduzir && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+		const cursor = document.querySelector<HTMLElement>(".cursor")!;
+		let x = 0;
+		let y = 0;
+		let mostrado = false;
+
+		window.addEventListener("mousemove", (e) => {
+			x = e.clientX;
+			y = e.clientY;
+			cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+			if (!mostrado) {
+				cursor.classList.add("cursor--visivel");
+				mostrado = true;
+			}
+		});
+
+		document.querySelectorAll<HTMLElement>(".card__midia").forEach((midia) => {
+			midia.addEventListener("mouseenter", () => cursor.classList.add("cursor--grande"));
+			midia.addEventListener("mouseleave", () => cursor.classList.remove("cursor--grande"));
+		});
+	}
 </script>
 
 <style is:global>
@@ -132,6 +167,7 @@ experiência em produção gráfica e arte final.</span>
 		display: block;
 		flex: 1;
 		min-height: 0;
+		overflow: hidden;
 	}
 
 	.card img {
@@ -139,6 +175,99 @@ experiência em produção gráfica e arte final.</span>
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+	}
+
+	.card:has(a:hover) img {
+		transform: scale(1.06);
+	}
+
+	/* Cursor customizado */
+	.cursor {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 10px;
+		height: 10px;
+		margin: -5px 0 0 -5px;
+		border-radius: 50%;
+		background: var(--cor-texto);
+		border: 1px solid var(--cor-fundo-pagina);
+		box-sizing: border-box;
+		pointer-events: none;
+		z-index: 30;
+		opacity: 0;
+		transition:
+			width 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+			height 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+			margin 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+			opacity 0.25s;
+	}
+
+	.cursor--visivel {
+		opacity: 1;
+	}
+
+	.cursor--grande {
+		width: 48px;
+		height: 48px;
+		margin: -24px 0 0 -24px;
+		background: transparent;
+		border: 1.5px solid var(--cor-texto);
+	}
+
+	/* Revelação em cascata */
+	.titulo,
+	.descricao,
+	.cards .card {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 0.6s ease,
+			transform 0.6s ease;
+	}
+
+	html.pronto .titulo {
+		opacity: 1;
+		transform: none;
+	}
+
+	html.pronto .descricao {
+		opacity: 1;
+		transform: none;
+		transition-delay: 0.12s;
+	}
+
+	html.pronto .cards .card:nth-child(1) {
+		opacity: 1;
+		transform: none;
+		transition-delay: 0.24s;
+	}
+
+	html.pronto .cards .card:nth-child(2) {
+		opacity: 1;
+		transform: none;
+		transition-delay: 0.32s;
+	}
+
+	html.pronto .cards .card:nth-child(3) {
+		opacity: 1;
+		transform: none;
+		transition-delay: 0.4s;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.titulo,
+		.descricao,
+		.cards .card {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+
+		.card img {
+			transition: none;
+		}
 	}
 
 	@media (max-width: 768px) {
