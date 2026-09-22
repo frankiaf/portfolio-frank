@@ -94,6 +94,14 @@ html.t-conteudo main {
 	transform: scale3d(1, 1, 1);
 }
 
+.header__nav a[aria-current="page"] {
+	font-weight: 500;
+}
+
+.header__nav a[aria-current="page"]::before {
+	transform: scale3d(1, 1, 1);
+}
+
 .container {
 	display: flex;
 	flex-direction: column;

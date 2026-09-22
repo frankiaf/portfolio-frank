@@ -1,17 +1,8 @@
----
-interface Props {
-	titulo: string;
-	chaveTitulo: string;
-}
-
-const { titulo, chaveTitulo } = Astro.props;
----
-
 <a href="/" class="voltar" data-reversa>
 	<svg class="voltar__seta" width="20" height="8" viewBox="0 0 20 8" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
 		<path d="M20 4H1M4 1L1 4L4 7" />
 	</svg>
-	<span class="voltar__texto" data-i18n={chaveTitulo}>{titulo}</span>
+	<span class="voltar__texto" data-i18n="menu.voltar">Voltar</span>
 </a>
 
 <style>

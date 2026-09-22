@@ -11,17 +11,15 @@ interface Imagem {
 }
 
 interface Props {
-	titulo: string;
-	chaveTitulo: string;
 	imagens: Imagem[];
 }
 
-const { titulo, chaveTitulo, imagens } = Astro.props;
+const { imagens } = Astro.props;
 const ehVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 ---
 
 <div class="topo">
-	<Voltar titulo={titulo} chaveTitulo={chaveTitulo} />
+	<Voltar />
 
 	<button type="button" class="ordenar" aria-label="Ordenar imagens">
 		<span class="ordenar__rotulo" data-i18n="galeria.ordenar">Ordenar:</span>

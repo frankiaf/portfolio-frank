@@ -1,5 +1,7 @@
 ---
-const naHome = Astro.url.pathname === "/";
+const caminho = Astro.url.pathname;
+const naHome = caminho === "/";
+const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(href));
 ---
 
 <header class="header">
@@ -8,11 +10,11 @@ const naHome = Astro.url.pathname === "/";
 	</button>
 	<div class="header__fundo" aria-hidden="true"></div>
 	<nav class="header__nav" id="menu-lateral">
-		<a href="/" data-i18n="menu.inicio">Início</a>
-		<a href="/trabalhos" data-i18n="cards.trabalhos">Trabalhos</a>
-		<a href="/experimentos" data-i18n="cards.projetos">Experimentos</a>
-		<a href="/sobre" data-i18n="menu.sobre">Sobre mim</a>
-		<a href="/contato" data-i18n="menu.contato">Contato</a>
+		<a href="/" data-i18n="menu.inicio" aria-current={ehAtual("/") ? "page" : undefined}>Início</a>
+		<a href="/trabalhos" data-i18n="cards.trabalhos" aria-current={ehAtual("/trabalhos") ? "page" : undefined}>Trabalhos</a>
+		<a href="/experimentos" data-i18n="cards.projetos" aria-current={ehAtual("/experimentos") ? "page" : undefined}>Experimentos</a>
+		<a href="/sobre" data-i18n="menu.sobre" aria-current={ehAtual("/sobre") ? "page" : undefined}>Sobre mim</a>
+		<a href="/contato" data-i18n="menu.contato" aria-current={ehAtual("/contato") ? "page" : undefined}>Contato</a>
 
 		<div class="header__idioma header__idioma--movel">
 			<span class="header__idioma-label" data-i18n-slide="menu.idioma"
