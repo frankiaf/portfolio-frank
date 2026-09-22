@@ -17,14 +17,8 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 		<a href="/contato" data-i18n="menu.contato" aria-current={ehAtual("/contato") ? "page" : undefined}>Contato</a>
 
 		<div class="header__idioma header__idioma--movel">
-			<span class="header__idioma-label" data-i18n-slide="menu.idioma"
-				><span class="header__idioma-clip">Idioma:</span></span
-			>
-			<button type="button" class="header__idioma-btn" data-i18n-aria="menu.trocar-idioma" aria-label="Mudar para inglês">
-				<span class="header__idioma-label" data-i18n-slide="menu.idioma-atual"
-					><span class="header__idioma-clip">Português</span></span
-				>
-			</button>
+			<button type="button" class="header__idioma-opcao" data-idioma="pt" aria-label="Português">PT</button>
+			<button type="button" class="header__idioma-opcao" data-idioma="en" aria-label="English">EN</button>
 		</div>
 
 		<div class="header__legal">
@@ -36,14 +30,8 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 	{naHome ? null : <a href="/" class="header__nome"><img src="/images/logo-frank.svg" alt="Frank Alves" /></a>}
 
 	<div class="header__idioma">
-		<span class="header__idioma-label" data-i18n-slide="menu.idioma"
-			><span class="header__idioma-clip">Idioma:</span></span
-		>
-		<button type="button" class="header__idioma-btn" data-i18n-aria="menu.trocar-idioma" aria-label="Mudar para inglês">
-			<span class="header__idioma-label" data-i18n-slide="menu.idioma-atual"
-				><span class="header__idioma-clip">Português</span></span
-			>
-		</button>
+		<button type="button" class="header__idioma-opcao" data-idioma="pt" aria-label="Português">PT</button>
+		<button type="button" class="header__idioma-opcao" data-idioma="en" aria-label="English">EN</button>
 	</div>
 </header>
 
@@ -79,7 +67,7 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 	}
 
 	.header__idioma {
-		gap: 12px;
+		gap: 8px;
 	}
 
 	.header__menu-btn,
@@ -110,50 +98,25 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 		text-decoration: none;
 	}
 
-	.header__idioma-label {
-		position: relative;
-	}
-
-	.header__idioma-clip {
-		position: relative;
-		display: inline-block;
-		overflow: hidden;
-		white-space: nowrap;
-		vertical-align: top;
-	}
-
-	.header__idioma-clip :global(span) {
-		display: inline-block;
-	}
-
-	.header__idioma > .header__idioma-label::before {
-		content: "";
-		position: absolute;
-		top: 100%;
-		left: 0;
-		width: 100%;
-		height: 1px;
-		background: currentColor;
-		pointer-events: none;
-		transform-origin: 100% 50%;
-		transform: scale3d(0, 1, 1);
-		transition: transform 0.3s;
-	}
-
-	.header__idioma:has(.header__idioma-btn:hover) > .header__idioma-label::before {
-		transform-origin: 0% 50%;
-		transform: scale3d(1, 1, 1);
-	}
-
-	.header__idioma-btn {
+	.header__idioma-opcao {
 		padding: 0;
 		border: 0;
 		background: none;
-		color: inherit;
+		color: rgba(0, 0, 0, 0.4);
 		font: inherit;
 		letter-spacing: inherit;
 		text-transform: inherit;
 		cursor: pointer;
+		transition: color 0.2s;
+	}
+
+	.header__idioma-opcao:hover {
+		color: inherit;
+	}
+
+	.header__idioma-opcao[aria-current="true"] {
+		color: inherit;
+		cursor: default;
 	}
 
 	@media (max-width: 768px) {
@@ -260,7 +223,7 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 			border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 		}
 
-		.header__idioma--movel .header__idioma-btn {
+		.header__idioma--movel .header__idioma-opcao {
 			padding: 14px 0;
 		}
 
@@ -284,10 +247,6 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 			opacity: 1;
 			pointer-events: all;
 		}
-
-		.header__idioma > .header__idioma-label:first-child {
-			display: none;
-		}
 	}
 </style>
 
@@ -296,41 +255,7 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 
 	const CHAVE = "idioma";
 
-	const slides = document.querySelectorAll<HTMLElement>("[data-i18n-slide]");
-
-	function trocarTexto(clip: HTMLElement, novo: string, anterior?: string) {
-		if (anterior === undefined || anterior === novo) {
-			clip.textContent = novo;
-			return;
-		}
-
-		const saindo = document.createElement("span");
-		saindo.textContent = anterior;
-		const entrando = document.createElement("span");
-		entrando.textContent = novo;
-		entrando.style.position = "absolute";
-		entrando.style.left = "0";
-		entrando.style.top = "0";
-		clip.replaceChildren(saindo, entrando);
-
-		const opcoes: KeyframeAnimationOptions = {
-			duration: 300,
-			easing: "cubic-bezier(0.5, 0.5, 0.3, 1)",
-			fill: "forwards",
-		};
-		saindo.animate(
-			[{ transform: "translate3d(0,0,0)" }, { transform: "translate3d(-150%,0,0)" }],
-			opcoes,
-		);
-		entrando.animate(
-			[{ transform: "translate3d(150%,0,0)" }, { transform: "translate3d(0,0,0)" }],
-			opcoes,
-		).onfinish = () => {
-			clip.textContent = novo;
-		};
-	}
-
-	function aplicar(idioma: Idioma, anterior?: Idioma) {
+	function aplicar(idioma: Idioma) {
 		document.documentElement.lang = idioma === "pt" ? "pt-BR" : "en";
 		document.documentElement.dataset.idioma = idioma;
 		const dict = traducoes[idioma];
@@ -342,15 +267,14 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 			else el.textContent = texto;
 		});
 
-		slides.forEach((label) => {
-			const chave = label.dataset.i18nSlide!;
-			const clip = label.querySelector<HTMLElement>(".header__idioma-clip")!;
-			trocarTexto(clip, dict[chave], anterior && traducoes[anterior][chave]);
-		});
-
 		document.querySelectorAll<HTMLElement>("[data-i18n-aria]").forEach((el) => {
 			const texto = dict[el.dataset.i18nAria!];
 			if (texto) el.setAttribute("aria-label", texto);
+		});
+
+		document.querySelectorAll<HTMLButtonElement>(".header__idioma-opcao").forEach((btn) => {
+			if (btn.dataset.idioma === idioma) btn.setAttribute("aria-current", "true");
+			else btn.removeAttribute("aria-current");
 		});
 
 		try {
@@ -365,11 +289,12 @@ const ehAtual = (href: string) => (href === "/" ? naHome : caminho.startsWith(hr
 
 	aplicar(atual);
 
-	document.querySelectorAll(".header__idioma-btn").forEach((btn) =>
+	document.querySelectorAll<HTMLButtonElement>(".header__idioma-opcao").forEach((btn) =>
 		btn.addEventListener("click", () => {
-			const anterior = atual;
-			atual = atual === "pt" ? "en" : "pt";
-			aplicar(atual, anterior);
+			const idioma = btn.dataset.idioma as Idioma;
+			if (idioma === atual) return;
+			atual = idioma;
+			aplicar(atual);
 		}),
 	);
 	const header = document.querySelector<HTMLElement>(".header")!;
